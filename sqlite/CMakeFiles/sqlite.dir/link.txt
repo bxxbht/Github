@@ -1,0 +1,1 @@
+/usr/lib/ccache/c++       CMakeFiles/sqlite.dir/sqlite.o  -o sqlite -rdynamic -lsqlite3 
