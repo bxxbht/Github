@@ -1,0 +1,38 @@
+#!/bin/sh
+
+type="Arm"
+
+arm_path="/usr/local/arm/4.2.2-eabi/usr/bin"
+core_path="/usr/local/arm-linux-tools"
+echo "cd /root/workdir/$type/build"
+echo "arm_path $arm_path"
+echo "core_path $core_path"
+
+rm -f $core_path/ut5000
+rm -f $core_path/Map.txt
+rm -f $core_path/ut5000.S
+
+
+cd /root/workdir/$type/build
+rm -f Map.txt
+rm -f ut5000.S
+$arm_path/arm-linux-objdump -d ut5000 > ut5000.S
+$arm_path/arm-linux-readelf -s ut5000 >Map.txt
+cp Map.txt $core_path/Map.txt
+cp ut5000.S $core_path/ut5000.S
+cp ut5000 $core_path/ut5000
+
+rm -f /mnt/exejffs2/ut5000
+rm -f /mnt/exejffs2/Map.txt
+cp Map.txt /mnt/exejffs2/Map.txt
+cp ut5000 /mnt/exejffs2/ut5000
+$arm_path/arm-linux-strip /mnt/exejffs2/ut5000
+
+cd /mnt
+./mkcramfs_ex exejffs2 app.cramfs
+cd /root
+rm -f app.cramfs
+cp  /mnt/app.cramfs /root/app
+
+
+echo "Sucess  finish task !"
