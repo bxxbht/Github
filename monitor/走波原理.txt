@@ -1,0 +1,27 @@
+1.重要变量
+（1）像素分辨率，尤其是x坐标间距dpiX;
+（2）采样率sampleRate；
+（3）定时器每秒推进次数为refreshRate；
+（4）进而退出每一次需要绘制波点数为：samplesFrames = sampleRate/refreshRate；
+（5) 对于有波速限制，比如6.25mm/s，那么每次推进必须要达到x间距：shiftStepper = (.625 * (dpiX / inch2Centimeter)) / refreshRate;
+（6）根据（4）和（5），将每次推进必须要达到x间距 平摊到 每一次需要绘制波点数，qreal forwardStrokePerDot = (qreal)delta / dots;
+     每一个点所需要往前推进的x坐标；
+
+2.注意点
+（1）由于forwardStrokePerDot可能为一个很小的浮点数，甚至小于像素间距dpiX；因此就会造成前后两个点在设置X坐标时，实际上x值只有微弱的差距，但在底层绘图时，会在哪个x的像素点上可能不会体现出来，因为它的像素分辨率达不到；比如point1(x1,3)和point(x1+0.000000000001,3)可能绘制在同一个点上。这就是为什么要用QpointF的原因。
+（2）将采样率写死实际上不可取。因为在通信的过程中丢数据或模块不稳定都无法保证采样率。这里的代码做演示模式还是可以的。
+     改进空间：增加数据缓冲区，进行读，写指针比较，达到每个数据消耗控制。
+
+核心代码：
+        for (int i = 0; i < dots; i++) {
+                x += forwardStrokePerDot;
+                y = curveAxisY();
+                if (x > indicatorMax) {
+                        x -= indicatorMax;
+                        to.setX(0.0);
+                        curvePath.moveTo(to);
+                }
+                to.setX(x);
+                to.setY(y);
+                curvePath.lineTo(to);
+        }
