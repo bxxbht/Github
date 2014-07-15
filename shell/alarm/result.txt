@@ -1,0 +1,370 @@
+AlarmProperity CAlarmManager::m_alarmProperity[] =
+{ 
+    {ALARM_ID_ECG_ASYSTOLE,		/*0*/					ECG,		生理,		高级},  			//无心率检出
+    {ALARM_ID_ECG_NOSIGNAL,		/*1*/					ECG,		技术,		中级},  			//无信号
+    {ALARM_ID_ECG_HR_OVERHIGH,	/*2*/						ECG,		生理,		中级},			//心率过高
+    {ALARM_ID_ECG_HR_OVERLOW,	/*3*/						ECG,		生理,		中级},			//心率过低
+    {ALARM_ID_ECG_ST1_OVERHIGH,	/*4*/						ECG,		生理,		中级},			//ST过高
+    {ALARM_ID_ECG_ST1_OVERLOW,	/*5*/						ECG,		生理,		中级},			//ST过低
+    {ALARM_ID_ECG_ST2_OVERHIGH,							ECG,		生理,		中级},			//ST过高
+    {ALARM_ID_ECG_ST2_OVERLOW,							ECG,		生理,		中级},			//ST过低
+    {ALARM_ID_ECG_ST3_OVERHIGH,							ECG,		生理,		中级},			//ST过高
+    {ALARM_ID_ECG_ST3_OVERLOW,							ECG,		生理,		中级},			//ST过低
+    {ALARM_ID_ECG_ST4_OVERHIGH,	/*10*/						ECG,		生理,		中级},			//ST过高
+    {ALARM_ID_ECG_ST4_OVERLOW,							ECG,		生理,		中级},			//ST过低
+    {ALARM_ID_ECG_ST5_OVERHIGH,							ECG,		生理,		中级},			//ST过高
+    {ALARM_ID_ECG_ST5_OVERLOW,							ECG,		生理,		中级},			//ST过低
+    {ALARM_ID_ECG_ST6_OVERHIGH,							ECG,		生理,		中级},			//ST过高
+    {ALARM_ID_ECG_ST6_OVERLOW,	/*15*/						ECG,		生理,		中级},			//ST过低
+    {ALARM_ID_ECG_ST7_OVERHIGH,							ECG,		生理,		中级},			//ST过高
+    {ALARM_ID_ECG_ST7_OVERLOW,							ECG,		生理,		中级},			//ST过低
+    {ALARM_ID_ECG_ST8_OVERHIGH,							ECG,		生理,		中级},			//ST过高
+    {ALARM_ID_ECG_ST8_OVERLOW,							ECG,		生理,		中级},			//ST过低
+    {ALARM_ID_ECG_DEMO,			/*20*/					ECG,		技术,		提示},                  //DEMO模式
+    {ALARM_ID_ECG_SIGNAL_TOO_WEAK,							ECG,		技术,		中级},		//ARR信号太小
+    {ALARM_ID_ECG_ARR_OCC,								ECG,		生理,		中级},				//新ARR发生报警
+    {ALARM_ID_ECG_FREEZE,								ECG,		技术,		中级},          //波形冻结
+    {ALARM_ID_ECG1_CHANGESTATE,							ECG,		技术,		中级},           //状态切换
+    {ALARM_ID_ECG2_CHANGESTATE,	/*25*/						ECG,		技术,		中级},           //状态切换
+    {ALARM_ID_ECG3_CHANGESTATE,							ECG,		技术,		中级},           //状态切换
+    {ALARM_ID_ECG4_CHANGESTATE,							ECG,		技术,		中级},           //状态切换
+    {ALARM_ID_ECG5_CHANGESTATE,							ECG,		技术,		中级},           //状态切换
+    {ALARM_ID_ECG6_CHANGESTATE,							ECG,		技术,		中级},           //状态切换
+    {ALARM_ID_ECG7_CHANGESTATE,		/*30*/					ECG,		技术,		中级},           //状态切换
+    {ALARM_ID_ECG8_CHANGESTATE,							ECG,		技术,		中级},           //状态切换
+    {ALARM_ID_ECG1_LEADS_OFF,							ECG,		技术,		中级},			//电极脱落
+    {ALARM_ID_ECG2_LEADS_OFF,							ECG,		技术,		中级},			//电极脱落
+    {ALARM_ID_ECG3_LEADS_OFF,							ECG,		技术,		中级},			//电极脱落
+    {ALARM_ID_ECG4_LEADS_OFF,		/*35*/					ECG,		技术,		中级},			//电极脱落
+    {ALARM_ID_ECG5_LEADS_OFF,							ECG,		技术,		中级},			//电极脱落
+    {ALARM_ID_ECG6_LEADS_OFF,							ECG,		技术,		中级},			//电极脱落
+    {ALARM_ID_ECG7_LEADS_OFF,							ECG,		技术,		中级},			//电极脱落
+    {ALARM_ID_ECG8_LEADS_OFF,							ECG,		技术,		中级},			//电极脱落
+    {ALARM_ID_ECG_VPC_OVERHIGH,		/*40*/					ECG,		生理,		中级},		//vpc过高
+    {ALARM_ID_ECG_VPC_OVERLOW,							ECG,		生理,		中级},		//vpc过低
+    {ALARM_ID_ECG_ARR_LEARNING,								ECG,		技术,		低级},          //arr正在学习
+
+    {ALARM_ID_RESP_APNEA,								RESP, 	生理,		高级},//窒息报警
+    {ALARM_ID_RESP_OVERHIGH,							RESP, 	生理,		中级},//呼吸率过高
+    {ALARM_ID_RESP_OVERLOW,			/*45*/				RESP, 	生理,		中级},//呼吸率过低
+    {ALARM_ID_RESP_LEADS_OFF,							RESP, 	技术,		中级},//电极脱落
+    {ALARM_ID_RESP_NOSIGNAL,							RESP, 	技术,		中级},//无信号
+    {ALARM_ID_RESP_INTERFERENCE,						RESP, 	技术,		中级},//心动干扰
+    {ALARM_ID_RESP_DEMO,								RESP, 	技术,		低级},//demo模式
+
+    {ALARM_ID_SPO2_NOSIGNAL,		/*50*/				SPO2, 	技术,		中级},//无信号接收
+    {ALARM_ID_SPO2_OVERHIGH,							SPO2, 	生理,		中级},//SPO2过高
+    {ALARM_ID_SPO2_OVERLOW,								SPO2, 	生理,		中级},//SPO2过低
+    {ALARM_ID_SPO2_ULTRALOW,							SPO2, 	生理,		高级},//SPO2超低
+    {ALARM_ID_SPO2_PULSE_OVERHIGH,						SPO2, 	生理,		中级},//SPO2脉率值过高
+    {ALARM_ID_SPO2_PULSE_OVERLOW,	/*55*/				SPO2, 	生理,		中级},//SPO2脉率值过低
+    {ALARM_ID_SPO2_SENSOR_DISCONNECT,					SPO2, 	技术,		中级},//探头脱落
+    {ALARM_ID_SPO2_INTERFERENCE,						SPO2, 	技术,		中级},//SPO2干扰
+    {ALARM_ID_SPO2_EQUIP_MALFUNCTION,					SPO2, 	技术,		中级},//SPO2设备故障
+    {ALARM_ID_SPO2_SENSOR_MALFUNCTION,					SPO2, 	技术,		中级},//SPO2传感器故障
+    {ALARM_ID_SPO2_NOISY_SIGNAL,	/*60*/				SPO2, 	技术,		中级},//SPO2噪扰信号
+    {ALARM_ID_SPO2_ERRATIC_SIGNAL,						SPO2, 	技术,		中级},//SPO2不稳定信号
+    {ALARM_ID_SPO2_SEARCHING,							SPO2, 	技术,		提示},//SPO2正在检出
+    {ALARM_ID_SPO2_LOWPERF,								SPO2, 	生理,		中级},//低灌注
+    {ALARM_ID_SPO2_DEMO,								SPO2, 	技术,		提示},//DEMO模式
+    {ALARM_ID_SPO2_SEARCH_TIMEOUT,	/*65*/				SPO2, 	技术,		中级},//搜索超时
+    
+    {ALARM_ID_NBP_BLOODDIFF_OVERLIMIT,	    			 NIBP, 	生理,		高级},//血压差超限
+    {ALARM_ID_NBP_SYS_OVERHIGH,							NIBP, 	生理,		中级},//收缩压过高
+    {ALARM_ID_NBP_SYS_OVERLOW,							NIBP, 	生理,		中级},//收缩压过低
+    {ALARM_ID_NBP_DIA_OVERHIGH,							NIBP, 	生理,		中级},//舒张压过高
+    {ALARM_ID_NBP_DIA_OVERLOW,		/*70*/				NIBP, 	生理,		中级},//舒张压过低
+    {ALARM_ID_NBP_MAP_OVERHIGH,							NIBP, 	生理,		中级},//平均压过高
+    {ALARM_ID_NBP_MAP_OVERLOW,							NIBP, 	生理,		中级},//平均压过低
+    {ALARM_ID_NBP_PR_OVERHIGH,							NIBP, 	生理,		中级},//PR过高
+    {ALARM_ID_NBP_PR_OVERLOW,							NIBP, 	生理,		中级},//PR过低
+    {ALARM_ID_NBP_SYSDIA_DIFF_OVERHIGH,/*75*/			NIBP, 	生理,		高级},//血压差 超线 过高
+    {ALARM_ID_NBP_SYSDIA_DIFF_OVERLOW,					NIBP, 	生理,		高级},//血压差 超线 过低
+    {ALARM_ID_NBP_OVERPRESSURE_PROTECT,					NIBP, 	技术,		中级},//过压保护
+    {ALARM_ID_NBP_CUFFPOSITION_ERROR,					NIBP, 	技术,		中级},//袖带位置错误
+    {ALARM_ID_NBP_AIR_LEAK,								NIBP, 	技术,		中级},//漏气
+    {ALARM_ID_NBP_PRESSURE_OVERLIMIT,	/*80*/			NIBP, 	技术,		中级},//测量压力超限
+    {ALARM_ID_NBP_MEASUREMENT_ERROR,					NIBP, 	技术,		中级},//测量错误
+    {ALARM_ID_NBP_LOOSE_CUFF,							NIBP, 	技术,		中级},//袖带过松
+    {ALARM_ID_NBP_DEMO,									NIBP, 	技术,		低级},//DEMO模式
+
+    {ALARM_ID_CO2_NOSIGNAL,									CO2, 	技术,		中级},//无信号接收
+    {ALARM_ID_CO2_EXPIRED_OVERHIGH,		/*85*/					CO2, 	生理,		中级},//呼出浓度过高
+    {ALARM_ID_CO2_EXPIRED_OVERLOW,							CO2, 	生理,		中级},//呼出浓度过低
+    {ALARM_ID_CO2_INSPIRED_OVERHIGH,						CO2, 	生理,		中级},//吸入浓度过高
+    {ALARM_ID_CO2_INSPIRED_OVERLOW,							CO2, 	生理,		中级},//吸入浓度过低
+    {ALARM_ID_CO2_AWRR_OVERHIGH,							CO2, 	生理,		中级},//呼吸率过高
+    {ALARM_ID_CO2_AWRR_OVERLOW,		/*90*/						CO2, 	生理,		中级},//呼吸率过低
+    {ALARM_ID_CO2_WATERBOX_DISCONNECT,						CO2, 	技术,		中级},//水盒未接
+    {ALARM_ID_CO2_WATERBOX_BLOCKED,							CO2, 	技术,		中级},//水盒阻塞
+    {ALARM_ID_CO2_SIGNAL_WEAK,									CO2, 	技术,		中级},//信号微弱
+    {ALARM_ID_CO2_AIRTUBE_BLOCKED,							CO2, 	技术,		中级},//气管堵塞
+    {ALARM_ID_CO2_MODULE_TEMPERATURE_OVERHIGH,	/*95*/            CO2, 	技术,		中级},//模块温度过高
+    {ALARM_ID_CO2_ZERO_ERROR,							    CO2, 	技术,		中级},//调零错误
+    {ALARM_ID_CO2_SENSOR_WARMUP,							CO2, 	技术,		中级},//启动过程中
+    {ALARM_ID_CO2_ZEROING,							        CO2, 	技术,		中级},//调零过程中
+    {ALARM_ID_CO2_STANDBY,									CO2, 	技术,		提示},//待机模式
+    {ALARM_ID_CO2_MODULE_SLEEPING,		/*100*/					CO2, 	技术,		中级},//模块休眠中
+    {ALARM_ID_CO2_LEAK,										CO2, 	技术,		中级},//漏气
+    {ALARM_ID_CO2_PUPE_BLOCK,								CO2, 	技术,		中级},//气管堵塞
+    {ALARM_ID_CO2_APNEA,									CO2, 	技术,		高级},//窒息报警
+    {ALARM_ID_CO2_ZERO,										CO2, 	技术,		提示},//调零
+    {ALARM_ID_CO2_PUPE_MISS,   	/*105*/						CO2, 	技术,		中级},//气管未接
+    {ALARM_ID_CO2_CHECK,									CO2, 	技术,		低级},//检测
+    {ALARM_ID_CO2_CHECK_ERROR,								CO2, 	技术,		中级},//检测错误
+    {ALARM_ID_CO2_SENSOR_FAULTY,							CO2, 	技术,		中级},//CO2工作不正常
+    {ALARM_ID_CO2_DEMO,										CO2, 	技术,		提示},//demo模式
+    {ALARM_ID_CO2_INFO_UNDEFINE,						    CO2, 	技术,		中级},//未定义值
+    
+    {ALARM_ID_CO_NOSIGNAL,		/*110*/					TEMP, 	生理,		中级},//无信号接收
+    {ALARM_ID_CO_CO_OVERHIGH,							TEMP, 	生理,		中级},//心排过高
+    {ALARM_ID_CO_CO_OVERLOW,								TEMP, 	生理,		中级},//心排过低
+    {ALARM_ID_CO_BT_OVERHIGH,							TEMP, 	生理,		中级},//心排温度过高
+    {ALARM_ID_CO_BT_OVERLOW,							TEMP, 	生理,		中级},////心排温度过低
+
+    {ALARM_ID_TEMP1_OVERHIGH,	/*115*/					TEMP, 	生理,		中级},//体温1过高
+    {ALARM_ID_TEMP1_OVERLOW,							TEMP, 	生理,		中级},//体温1过低
+    {ALARM_ID_TEMP1_SELFCHECK,							TEMP, 	技术,		提示},//体温1自检
+    {ALARM_ID_TEMP1_SELFCHECK_ERROR,					TEMP, 	技术,		中级},//体温1自检错误
+
+    {ALARM_ID_TEMP2_OVERHIGH,							TEMP, 	生理,		中级},//体温2过高
+    {ALARM_ID_TEMP2_OVERLOW,	/*120*/					TEMP, 	生理,		中级},//体温2过低
+    {ALARM_ID_TEMP2_SELFCHECK,							TEMP, 	技术,		提示},//体温2自检
+    {ALARM_ID_TEMP2_SELFCHECK_ERROR,					TEMP, 	技术,		中级},//体温2自检错误
+
+    {ALARM_ID_IBP1_NOSIGNAL,							IBP1, 	技术,		中级},//无信号接收
+    {ALARM_ID_IBP1_SYS_OVERHIGH,						IBP1, 	生理,		中级},//收缩压过高
+    {ALARM_ID_IBP1_SYS_OVERLOW,	/*125*/					IBP1, 	生理,		中级},//收缩压过低
+    {ALARM_ID_IBP1_DIA_OVERHIGH,						IBP1, 	生理,		中级},//舒张压过高
+    {ALARM_ID_IBP1_DIA_OVERLOW,							IBP1, 	生理,		中级},//舒张压过低
+    {ALARM_ID_IBP1_MAP_OVERHIGH,						IBP1, 	生理,		中级},//平均压过高
+    {ALARM_ID_IBP1_MAP_OVERLOW,							IBP1, 	生理,		中级},//平均压过低
+    {ALARM_ID_IBP1_PR_OVERHIGH,	/*130*/					IBP1, 	生理,		中级},//PR过高
+    {ALARM_ID_IBP1_PR_OVERLOW,							IBP1, 	生理,		中级},//PR过低
+    {ALARM_ID_IBP1_SENSOR_DISCONNECT,					IBP1, 	技术,		中级},//传感器未接
+    {ALARM_ID_IBP1_SENSOR_INAIR,						IBP1, 	技术,		中级},//传感器 在空气中
+    {ALARM_ID_IBP1_CALIBRATION_ERROR,					IBP1, 	技术,		中级},//校准有误
+    {ALARM_ID_IBP1_CALIBRATING,	 /*135*/  	 			IBP1, 	技术,		提示},//正在校准
+    {ALARM_ID_IBP1_ZERO,								IBP1, 	技术,		提示},//调零
+    {ALARM_ID_IBP1_ZERO_SUCCESS,						IBP1, 	技术,		提示},//调零成功
+    {ALARM_ID_IBP1_DEMO,								IBP1, 	技术,		提示},//DEMO模式
+
+    {ALARM_ID_IBP2_NOSIGNAL,					IBP2, 	技术,		中级},//无信号接收
+    {ALARM_ID_IBP2_SYS_OVERHIGH,/*140*/				IBP2, 	生理,		中级},//收缩压过高
+    {ALARM_ID_IBP2_SYS_OVERLOW,					IBP2, 	生理,		中级},//收缩压过低
+    {ALARM_ID_IBP2_DIA_OVERHIGH,				IBP2, 	生理,		中级},//舒张压过高
+    {ALARM_ID_IBP2_DIA_OVERLOW,					IBP2, 	生理,		中级},//舒张压过低
+    {ALARM_ID_IBP2_MAP_OVERHIGH,				IBP2, 	生理,		中级},//平均压过高
+    {ALARM_ID_IBP2_MAP_OVERLOW,	/*145*/				IBP2, 	生理,		中级},//平均压过低
+    {ALARM_ID_IBP2_PR_OVERHIGH,					IBP2, 	生理,		中级},//PR过高
+    {ALARM_ID_IBP2_PR_OVERLOW,					IBP2, 	生理,		中级},//PR过低
+    {ALARM_ID_IBP2_SENSOR_DISCONNECT,			IBP2, 	技术,		中级},//传感器未接
+    {ALARM_ID_IBP2_SENSOR_INAIR,				IBP2, 	技术,		中级},//传感器 在空气中
+    {ALARM_ID_IBP2_CALIBRATION_ERROR,/*150*/			IBP2, 	技术,		中级},//校准有误
+    {ALARM_ID_IBP2_CALIBRATING,					IBP2, 	技术,		提示},//正在校准
+    {ALARM_ID_IBP2_ZERO,						IBP2, 	技术,		提示},//调零
+    {ALARM_ID_IBP2_ZERO_SUCCESS,				IBP2, 	技术,		提示},//调零成功
+    {ALARM_ID_IBP2_DEMO,						IBP2, 	技术,		提示},//DEMO模式
+
+    {ALARM_ID_IBP3_NOSIGNAL,	/*155*/				IBP3, 	技术,		中级},//无信号接收
+    {ALARM_ID_IBP3_SYS_OVERHIGH,				IBP3, 	生理,		中级},//收缩压过高
+    {ALARM_ID_IBP3_SYS_OVERLOW,					IBP3, 	生理,		中级},//收缩压过低
+    {ALARM_ID_IBP3_DIA_OVERHIGH,				IBP3, 	生理,		中级},//舒张压过高
+    {ALARM_ID_IBP3_DIA_OVERLOW,					IBP3, 	生理,		中级},//舒张压过低
+    {ALARM_ID_IBP3_MAP_OVERHIGH,	/*160*/			IBP3, 	生理,		中级},//平均压过高
+    {ALARM_ID_IBP3_MAP_OVERLOW,					IBP3, 	生理,		中级},//平均压过低
+    {ALARM_ID_IBP3_PR_OVERHIGH,					IBP3, 	生理,		中级},//PR过高
+    {ALARM_ID_IBP3_PR_OVERLOW,					IBP3, 	生理,		中级},//PR过低
+    {ALARM_ID_IBP3_SENSOR_DISCONNECT,			IBP3, 	技术,		中级},//传感器未接
+    {ALARM_ID_IBP3_SENSOR_INAIR,	/*165*/			IBP3, 	技术,		中级},//传感器 在空气中
+    {ALARM_ID_IBP3_CALIBRATION_ERROR,			IBP3, 	技术,		中级},//校准有误
+    {ALARM_ID_IBP3_CALIBRATING,					IBP3, 	技术,		提示},//正在校准
+    {ALARM_ID_IBP3_ZERO,						IBP3, 	技术,		提示},//调零
+    {ALARM_ID_IBP3_ZERO_SUCCESS,				IBP3, 	技术,		提示},//调零成功
+    {ALARM_ID_IBP3_DEMO,			/*170*/			IBP3, 	技术,		提示},//DEMO模式
+
+    {ALARM_ID_IBP4_NOSIGNAL,					IBP4, 	技术,		中级},//无信号接收
+    {ALARM_ID_IBP4_SYS_OVERHIGH,				IBP4, 	生理,		中级},//收缩压过高
+    {ALARM_ID_IBP4_SYS_OVERLOW,					IBP4, 	生理,		中级},//收缩压过低
+    {ALARM_ID_IBP4_DIA_OVERHIGH,				IBP4, 	生理,		中级},//舒张压过高
+    {ALARM_ID_IBP4_DIA_OVERLOW,		/*175*/			IBP4, 	生理,		中级},//舒张压过低
+    {ALARM_ID_IBP4_MAP_OVERHIGH,				IBP4, 	生理,		中级},//平均压过高
+    {ALARM_ID_IBP4_MAP_OVERLOW,					IBP4, 	生理,		中级},//平均压过低
+    {ALARM_ID_IBP4_PR_OVERHIGH,					IBP4, 	生理,		中级},//PR过高
+    {ALARM_ID_IBP4_PR_OVERLOW,					IBP4, 	生理,		中级},//PR过低
+    {ALARM_ID_IBP4_SENSOR_DISCONNECT,/*180*/			IBP4, 	技术,		中级},//传感器未接
+    {ALARM_ID_IBP4_SENSOR_INAIR,				IBP4, 	技术,		中级},//传感器 在空气中
+    {ALARM_ID_IBP4_CALIBRATION_ERROR,			IBP4, 	技术,		中级},//校准有误
+    {ALARM_ID_IBP4_CALIBRATING,					IBP4, 	技术,		提示},//正在校准
+    {ALARM_ID_IBP4_ZERO,						IBP4, 	技术,		提示},//调零
+    {ALARM_ID_IBP4_ZERO_SUCCESS,	/*185*/			IBP4, 	技术,		提示},//调零成功
+    {ALARM_ID_IBP4_DEMO,						IBP4, 	技术,		提示},//DEMO模式
+
+    {ALARM_ID_NARCO_ETCO2_OVERHIGH,				NARCO_CO2, 	生理,		中级},//NARCO_ETCO2过高
+    {ALARM_ID_NARCO_ETCO2_OVERLOW,				NARCO_CO2, 	生理,		低级},//NARCO_ETCO2过低
+    {ALARM_ID_NARCO_INCO2_OVERHIGH,				NARCO_CO2, 	生理,		中级},//NARCO_INCO2过高
+    {ALARM_ID_NARCO_INCO2_OVERLOW,	/*190*/			NARCO_CO2, 	生理,		低级},//NARCO_INCO2过低
+    {ALARM_ID_NARCO_RR_OVERHIGH,					NARCO_CO2, 	生理,		中级},//NARCO_RR过高
+    {ALARM_ID_NARCO_RR_OVERLOW,					NARCO_CO2, 	生理,		低级},//NARCO_RR过低
+    {ALARM_ID_NARCO_O2_ET_OVERHIGH,				NARCO_O2, 	生理,		中级},//NARCO_O2_ET过高
+    {ALARM_ID_NARCO_O2_ET_OVERLOW,				NARCO_O2, 	生理,		低级},//NARCO_O2_ET过低
+    {ALARM_ID_NARCO_O2_IN_OVERHIGH,	/*195*/			NARCO_O2, 	生理,		中级},//NARCO_O2_IN过高
+    {ALARM_ID_NARCO_O2_IN_OVERLOW,				NARCO_O2, 	生理,		低级},//NARCO_O2_IN过低
+    {ALARM_ID_NARCO_NO2_ET_OVERHIGH,			NARCO_N2O, 	生理,		中级},//NARCO_NO2_ET过高
+    {ALARM_ID_NARCO_NO2_ET_OVERLOW,				NARCO_N2O, 	生理,		低级},//NARCO_NO2_ET过低
+    {ALARM_ID_NARCO_NO2_IN_OVERHIGH,			NARCO_N2O, 	生理,		中级},//NARCO_NO2_IN过高
+    {ALARM_ID_NARCO_NO2_IN_OVERLOW,	/*200*/			NARCO_N2O, 	生理,		低级},//NARCO_NO2_IN过低
+    {ALARM_ID_NARCO_HAL_ET_OVERHIGH,			NARCO_AG, 	生理,		中级},//NARCO_HAL_ET过高
+    {ALARM_ID_NARCO_HAL_ET_OVERLOW,	 			NARCO_AG, 	生理,		低级},//NARCO_HAL_ET过低
+    {ALARM_ID_NARCO_HAL_IN_OVERHIGH,			NARCO_AG, 	生理,		中级},//NARCO_HAL_IN过高
+    {ALARM_ID_NARCO_HAL_IN_OVERLOW,				NARCO_AG, 	生理,		低级},//NARCO_HAL_IN过低
+    {ALARM_ID_NARCO_IOS_ET_OVERHIGH,/*205*/			NARCO_AG, 	生理,		中级},//NARCO_IOS_ET过高
+    {ALARM_ID_NARCO_IOS_ET_OVERLOW,				NARCO_AG, 	生理,		低级},//NARCO_IOS_ET过低
+    {ALARM_ID_NARCO_IOS_IN_OVERHIGH, 			NARCO_AG, 	生理,		中级},//NARCO_IOS_IN过高
+    {ALARM_ID_NARCO_IOS_IN_OVERLOW,				NARCO_AG, 	生理,		低级},//NARCO_IOS_IN过低
+    {ALARM_ID_NARCO_ENF_ET_OVERHIGH,			NARCO_AG, 	生理,		中级},//NARCO_ENF_ET过高
+    {ALARM_ID_NARCO_ENF_ET_OVERLOW,	/*210*/			NARCO_AG, 	生理,		低级},//NARCO_ENF_ET过低
+    {ALARM_ID_NARCO_ENF_IN_OVERHIGH,			NARCO_AG, 	生理,		中级},//NARCO_ENF_IN过高
+    {ALARM_ID_NARCO_ENF_IN_OVERLOW,				NARCO_AG, 	生理,		低级},//NARCO_ENF_IN过低
+    {ALARM_ID_NARCO_SEV_ET_OVERHIGH,			NARCO_AG, 	生理,		中级},//NARCO_SEV_ET过高
+    {ALARM_ID_NARCO_SEV_ET_OVERLOW,				NARCO_AG, 	生理,		低级},//NARCO_SEV_ET过低
+    {ALARM_ID_NARCO_SEV_IN_OVERHIGH, /*215*/		NARCO_AG, 	生理,		中级},//NARCO_SEV_IN过高
+    {ALARM_ID_NARCO_SEV_IN_OVERLOW,				NARCO_AG, 	生理,		低级},//NARCO_SEV_IN过低
+    {ALARM_ID_NARCO_DES_ET_OVERHIGH,			NARCO_AG, 	生理,		中级},//NARCO_DES_ET过高
+    {ALARM_ID_NARCO_DES_ET_OVERLOW,				NARCO_AG, 	生理,		低级},//NARCO_DES_ET过低
+    {ALARM_ID_NARCO_DES_IN_OVERHIGH,			NARCO_AG, 	生理,		中级},//NARCO_DES_IN过高
+    {ALARM_ID_NARCO_DES_IN_OVERLOW,	/*220*/			NARCO_AG, 	生理,		低级},//NARCO_DES_IN过低
+
+    {ALARM_ID_NARCO_STARTUP,						NARCO_AG, 	技术,		低级},//启动过程中
+    {ALARM_ID_NARCO_WATERBOX_FULLED,				NARCO_AG, 	技术,		中级},//NARCO水盒已满
+    {ALARM_ID_NARCO_MODULE_ERROR,					NARCO_AG, 	技术,		中级},//NARCO模块错误
+    {ALARM_ID_NARCO_BLOCKED,							NARCO_AG, 	技术,		中级},//NARCO堵塞
+    {ALARM_ID_NARCO_NOSIGNAL,	/*225*/				NARCO_AG, 	技术,		中级},//无信号接收
+    {ALARM_ID_NARCO_APNEA,								NARCO_AG, 	生理,		高级},//NARCO窒息报警
+    {ALARM_ID_NARCO_NODATA,			      			NARCO_AG, 	技术,		中级},//NARCO 无数据
+    {ALARM_ID_NARCO_STANDBY,						NARCO_AG, 	技术,		提示},//待机模式
+    {ALARM_ID_NARCO_HYDRATION_DISCONNECT,			NARCO_AG, 	技术,		中级},//水合未接
+    {ALARM_ID_NARCO_ZERO,		/*230*/					NARCO_AG, 	技术,		提示},//调零
+    {ALARM_ID_NARCO_ZERO_ERROR,						NARCO_AG, 	技术,		中级},//调零错误
+    {ALARM_ID_NARCO_SELF_CHECK,						NARCO_AG, 	技术,		提示},//自检
+    {ALARM_ID_NARCO_SELF_CHECK_ERROR,				NARCO_AG, 	技术,		中级},//自检错误
+    {ALARM_ID_NARCO_PREHEATING,						NARCO_AG, 	技术,		提示},//预热过程中
+    {ALARM_ID_NARCO_ISOACCURARY, /*235*/					NARCO_AG, 	技术,		提示},
+    {ALARM_ID_NARCO_FULLACCURARY,					NARCO_AG, 	技术,		提示},//全精度
+    {ALARM_ID_NARCO_DEMO,							NARCO_AG, 	技术,		提示},//DEMO模式
+    {ALARM_ID_NARCO_CALIBRATING,					NARCO_AG, 	技术,		提示},//正在校准
+    {ALARM_ID_NARCO_CALIBRATION_ERROR,				NARCO_AG, 	技术,		中级},//校准有误
+    {ALARM_ID_NARCO_CALIBRATION_SUCCESS,/*240*/			NARCO_AG, 	技术,		提示},//校准成功
+
+    {ALARM_ID_NARCO_ERROR,							NARCO_AG, 	技术,		中级},//D
+    {ALARM_ID_NARCO_START,							NARCO_AG, 	技术,		中级},//D
+    {ALARM_ID_NARCO_INVIAD,							NARCO_AG, 	技术,		中级},//
+    {ALARM_ID_NARCO_DUSAI,							NARCO_AG, 	技术,		中级},//
+    {ALARM_ID_NARCO_PAUSED,	  /*245*/						NARCO_AG, 	技术,		中级},//
+    {ALARM_ID_NARCO_NOO2_SENSOR,					NARCO_AG, 	技术,		中级},//NARCO无O2传感器
+    {ALARM_ID_NARCO_O2CHANGE_O2SENSER,					NARCO_AG, 	技术,		中级},//更改O2传感气
+
+    {ALARM_ID_NAR_CO2_STARTUP,						NARCO_CO2, 	技术,		低级},//启动过程中
+    {ALARM_ID_NAR_CO2_NOSIGNAL,						NARCO_CO2, 	技术,		中级},//无信号接收
+    {ALARM_ID_NAR_CO2_APNEA,		/*250*/	      			NARCO_CO2, 	生理,		高级},//窒息报警
+    {ALARM_ID_NAR_CO2_NODATA,   							NARCO_CO2, 	技术,		中级},//NARCO 无数据
+    {ALARM_ID_NAR_CO2_STANDBY,							NARCO_CO2, 	技术,		提示},//待机模式
+    {ALARM_ID_NAR_CO2_HYDRATION_FULL,					NARCO_CO2, 	技术,		中级},//水合已满
+    {ALARM_ID_NAR_CO2_HYDRATION_DISCONNECT,				NARCO_CO2, 	技术,		中级},//水合未接
+    {ALARM_ID_NAR_CO2_ZERO,			/*255*/					NARCO_CO2, 	技术,		提示},//调零
+    {ALARM_ID_NAR_CO2_ZERO_ERROR,						NARCO_CO2, 	技术,		中级},//调零错误
+    {ALARM_ID_NAR_CO2_BLOCK,							NARCO_CO2, 	技术,		中级},//阻赛
+    {ALARM_ID_NAR_CO2_SELF_CHECK,						NARCO_CO2, 	技术,		提示},//自检
+    {ALARM_ID_NAR_CO2_SELF_CHECK_ERROR,					NARCO_CO2, 	技术,		中级},//自检错误
+    {ALARM_ID_NAR_CO2_PREHEATING,	/*260*/					NARCO_CO2, 	技术,		提示},//预热过程中
+    {ALARM_ID_NAR_CO2_ISOACCURARY,		 					NARCO_CO2, 	技术,		提示},
+    {ALARM_ID_NAR_CO2_FULLACCURARY,							NARCO_CO2, 	技术,		提示},//全精度
+    {ALARM_ID_NAR_CO2_DEMO,								NARCO_CO2, 	技术,		提示},//DEMO模式
+    {ALARM_ID_NAR_CO2_UNDEFINE,								NARCO_CO2, 	技术,		提示},//DEMO模式
+
+
+    {ALARM_ID_NAR_O2_STARTUP,	/*265*/				NARCO_O2, 	技术,		低级},//启动过程中
+    {ALARM_ID_NAR_O2_NOSIGNAL,						NARCO_O2, 	技术,		中级},//无信号接收
+    {ALARM_ID_NAR_O2_APNEA,			      				NARCO_O2, 	生理,		高级},//窒息报警
+    {ALARM_ID_NAR_O2_IN_LOW18,							NARCO_O2, 	生理,		高级},//吸入O2浓度低于 18
+    {ALARM_ID_NAR_O2_ET_LOW18,							NARCO_O2, 	生理,		高级},//呼出O2浓度低于 18
+    {ALARM_ID_NAR_O2_NODATA,		/*270*/					NARCO_O2, 	技术,		中级},//NARCO 无数据
+    {ALARM_ID_NAR_O2_STANDBY,							NARCO_O2, 	技术,		提示},//待机模式
+    {ALARM_ID_NAR_O2_HYDRATION_FULL,					NARCO_O2, 	技术,		中级},//水合已满
+    {ALARM_ID_NAR_O2_HYDRATION_DISCONNECT,				NARCO_O2, 	技术,		中级},//水合未接
+    {ALARM_ID_NAR_O2_ZERO,								NARCO_O2, 	技术,		提示},//调零
+    {ALARM_ID_NAR_O2_ZERO_ERROR,		/*275*/						NARCO_O2, 	技术,		中级},//调零
+    {ALARM_ID_NAR_O2_BLOCK,								NARCO_O2, 	技术,		中级},//阻赛
+    {ALARM_ID_NAR_O2_SELF_CHECK,						NARCO_O2, 	技术,		提示},//自检
+    {ALARM_ID_NAR_O2_SELF_CHECK_ERROR,					NARCO_O2, 	技术,		中级},//自检错误
+    {ALARM_ID_NAR_O2_PREHEATING,						NARCO_O2, 	技术,		提示},//预热过程中
+    {ALARM_ID_NAR_O2_ISOACCURARY,		/*280*/				NARCO_O2, 	技术,		提示},
+    {ALARM_ID_NAR_O2_FULLACCURARY,						NARCO_O2, 	技术,		提示},//全精度
+    {ALARM_ID_NAR_O2_DEMO,								NARCO_O2, 	技术,		提示},//DEMO模式
+
+
+
+    {ALARM_ID_NAR_N2O_STARTUP,							NARCO_N2O, 	技术,		低级},//启动过程中
+    {ALARM_ID_NAR_N2O_NOSIGNAL,							NARCO_N2O, 	技术,		中级},//无信号接收
+    {ALARM_ID_NAR_N2O_APNEA,			/*285*/      			NARCO_N2O, 	生理,		高级},//窒息报警
+    {ALARM_ID_NAR_N2O_NODATA,							NARCO_N2O, 	技术,		中级},//NARCO N2O 无数据
+    {ALARM_ID_NAR_N2O_STANDBY,							NARCO_N2O, 	技术,		提示},//待机模式
+    {ALARM_ID_NAR_N2O_HYDRATION_FULL,					NARCO_N2O, 	技术,		中级},//水合已满
+    {ALARM_ID_NAR_N2O_HYDRATION_DISCONNECT,				NARCO_N2O, 	技术,		中级},//水合未接
+    {ALARM_ID_NAR_N2O_ZERO,			/*290*/					NARCO_N2O, 	技术,		提示},//调零
+    {ALARM_ID_NAR_N2O_ZERO_ERROR,						NARCO_N2O, 	技术,		中级},//调零错误
+    {ALARM_ID_NAR_N2O_BLOCK,							NARCO_N2O, 	技术,		中级},//阻赛
+    {ALARM_ID_NAR_N2O_SELF_CHECK,						NARCO_N2O, 	技术,		提示},//自检
+    {ALARM_ID_NAR_N2O_SELF_CHECK_ERROR,					NARCO_N2O, 	技术,		中级},//自检错误
+    {ALARM_ID_NAR_N2O_PREHEATING,	/*295*/					NARCO_N2O, 	技术,		提示},//预热过程中
+    {ALARM_ID_NAR_N2O_ISOACCURARY,						NARCO_N2O, 	技术,		提示},
+    {ALARM_ID_NAR_N2O_FULLACCURARY,						NARCO_N2O, 	技术,		提示},//全精度
+    {ALARM_ID_NAR_N2O_DEMO,								NARCO_N2O, 	技术,		提示},//DEMO模式
+
+//金科威心电
+    {GD_ALARM_ID_ARR_TRIGEMINY,						ECG, 	生理,		中级},//VPC三联率
+    {GD_ALARM_ID_ARR_BIGEMINY,	/*300*/					ECG, 	生理,		中级},//VPC二联率
+    {GD_ALARM_ID_ARR_VT,							ECG, 	生理,		中级},//VPC室上性心动过速
+    {GD_ALARM_ID_ARR_VEB_PAIR,						ECG, 	生理,		中级},//VPC室早成对
+    {GD_ALARM_ID_ARR_R_ON_T,						ECG, 	生理,		中级},//VPC R NO T
+    {GD_ALARM_ID_ARR_VEB,							ECG, 	生理,		中级},//VPC室性早搏
+    {GD_ALARM_ID_ARR_TACHYCARDIA,  /*305*/			ECG, 	生理,		高级},//VPC心动过速
+    {GD_ALARM_ID_ARR_BRADYCARDIA,					ECG, 	生理,		高级},//VPC心动过缓
+    {GD_ALARM_ID_ARR_MISSEDBEATS,					ECG, 	生理,		中级},//VPC漏搏
+    {GD_ALARM_ID_ARR_VFID,							ECG, 	生理,		高级},//VPC室颤//停膊改室颤
+    {GD_ALARM_ID_ARR_ARRHYTHMIA,					ECG, 	生理,		中级},//VPC_心率不齐
+    {GD_ALARM_ID_ARR_NOVPC,		/*310*/					ECG, 	生理,		中级},//VPC无心率异常（即正常）
+    {GD_ALARM_ID_ARR_UNKNOWN,						ECG, 	生理,		中级},//VPC其他异常
+    {GD_ALARM_ID_ARR_ST,							ECG, 	生理,		中级},//VPC ST异常
+    {GD_ALARM_ID_ARR_VT_OVER_2,						ECG, 	生理,		中级},//VPC VT大于2
+
+//philips心电
+    {ALARM_ID_ARR_ASYSTOLE,							ECG, 	生理,		高级},//Asystole
+    {ALARM_ID_ARR_VFIB_VTACH,	/*315*/				ECG, 	生理,		高级},//VFib/Vtach
+    {ALARM_ID_ARR_VTACH,						ECG, 	生理,		高级},//VTach
+    {ALARM_ID_ARR_BRADYCARDIA,					ECG, 	生理,		中级},//Extreme Brady
+    {ALARM_ID_ARR_TACHYCARDIA,					ECG, 	生理,		中级},//Extreme Tachy
+    {ALARM_ID_ARR_NON_SUSTAIN_VTACH,			ECG, 	生理,		中级},//Non Sustain VTach
+    {ALARM_ID_ARR_VENT_RHYTHM,	/*320*/			ECG, 	生理,		中级},//Vent Rhythm
+    {ALARM_ID_ARR_RUN_PVCS,						ECG, 	生理,		中级},//Run PVCS
+    {ALARM_ID_ARR_PAIR_PVCS,					ECG, 	生理,		中级},//Pair PVCS
+    {ALARM_ID_ARR_R_ON_T_PVC,					ECG, 	生理,		中级},//R on T PVC
+    {ALARM_ID_ARR_VENT_BIGEMINY,				ECG, 	生理,		中级},//Vent Bigeminy
+    {ALARM_ID_ARR_VENT_TRIGEMINY,/*325*/		ECG, 	生理,		中级},//Vent Trigeminy
+    {ALARM_ID_ARR_PVC_RATE,						ECG, 	生理,		中级},//PVC Rate High
+    {ALARM_ID_ARR_MULTIFORM_PVC,				ECG, 	生理,		中级},//Multiform PVC
+    {ALARM_ID_ARR_PACER_NOT_CAPTURE,			ECG, 	生理,		中级},//Pacer not Capture
+    {ALARM_ID_ARR_PACER_NOT_PACE,				ECG, 	生理,		中级},//Pacer not Capture
+    {ALARM_ID_ARR_PAUSE,		/*330*/			ECG, 	生理,		中级},//Pause
+    {ALARM_ID_ARR_MISSED_BEAT,					ECG, 	生理,		中级},//Missed Beat
+    {ALARM_ID_ARR_SVT,							ECG, 	生理,		中级},//SVT
+    {ALARM_ID_ARR_AFIB,							ECG, 	生理,		高级},//AFib
+    {ALARM_ID_ARR_IRREGULAR_HR,					ECG, 	生理,		中级},//Irregular HR
+
+
+    {ALARM_ID_BATTERY_BATTERY_LOW,	/*335*/			BATTERY, 	技术,		低级},//电池电量低
+    {ALARM_ID_BATTERY_BATTERY_VERY_LOW,				BATTERY, 	技术,		高级},//电池电量超低
+
+    {ALARM_ID_NET_LINKAGE_NOT_AVAILABLE,			NET, 	技术,		低级},//网络断开
+    {ALARM_ID_WATCHDOG_LOSS_MONITOR,				WATCHDOG, 	技术,		低级},//看门狗 低级报警
+};
