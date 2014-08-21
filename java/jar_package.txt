@@ -1,0 +1,40 @@
+包（package）
+对类文件进行分类管理
+给类提供多层命名空间
+写作程序文件的第一行
+类名的全称是 包名.类名
+包也式一种封装形式
+命名方式 所以字母小写 package pack;
+
+javac -d（指定包存放的目录）
+javac -d c:\myclass PackgeDemo.java
+javac -d . PackgeDemo.java
+.代表当前目录 
+
+总结：
+    包与包之间进行访问，被访问的包中的类以及类中的成员， 需要public修饰。
+    不同包中的子类可以直接访问父类中被protected权限修饰的成员。
+
+包与包之间可以使用的权限只有两种：public protected
+
+               public  protected  default（什么都不写）  private
+同一个类中        OK        OK        OK                    OK
+同一个包中        OK        OK        OK                    
+子类             OK        OK
+不同包中         OK
+
+权限只要大于等于就可以覆盖方法，如public可以覆盖protected
+
+import 导入的是包中的类
+建议：不要写通配符"*"，需要用到包中的哪个类，就导入哪个类。
+
+当导入的多个包中有重名的类时，那个类必须要在前面加上包名来区别
+
+建议定义包名不要重复，可以使用url来完成定义，url是唯一的
+
+
+Jar包：
+    java的压缩包
+        方便项目的携带。
+        方便于使用，只要在classpath设置jar路径既可
+        数据库驱动，SSH框架等都是以jar包体现的。
