@@ -24,25 +24,39 @@
 
 “app”模板告诉qmake为建立一个应用程序生成一个makefile。当使用这个模板时，下面这些qmake系统变量是被承认的。你应该在你的.pro文件中使用它们来为你的应用程序指定特定信息。
 
-    HEADERS - 应用程序中的所有头文件的列表。
+　　HEADERS：需要包含的头文件的列表。
 
-    SOURCES - 应用程序中的所有源文件的列表。
+　　SOURCES：需要的源文件的列表。
 
-    FORMS - 应用程序中的所有.ui文件（由Qt设计器生成）的列表。
+　　FORMS：需要的.ui文件的列表。
 
-    LEXSOURCES - 应用程序中的所有lex源文件的列表。
+　　LEXSOURCES：所有lex源文件的列表。
 
-    YACCSOURCES - 应用程序中的所有yacc源文件的列表。
+　　YACCSOURCES：所有yacc源文件的列表。
 
-    TARGET - 可执行应用程序的名称。默认值为项目文件的名称。（如果需要扩展名，会被自动加上。）
+　　TARGET：可执行应用程序的名称。默认值为项目文件的名字。
 
-    DESTDIR - 放置可执行程序目标的目录。
+　　DESTDIR：放置可执行程序目标的目录。
 
-    DEFINES - 应用程序所需的额外的预处理程序定义的列表。
+　　OBJECTS_DIR：放置obj中间文件的目录。
 
-    INCLUDEPATH - 应用程序所需的额外的包含路径的列表。
+　　MOC_DIR: moc转换文件路径。
 
-    DEPENDPATH - 应用程序所依赖的搜索路径。
+　　RCC_DIR: 资源文件路径。
+
+　　UI_DIR：ui文件转换的路径。
+
+　　RESOURCES：需要包含的资源文件。
+
+　　LIBS：依赖库的路径和名称 -L{xxdirxx} -l{xxnamexx}。
+
+　　LIBEXT: 产生lib的后缀。
+
+　　DEFINES：应用程序所需的额外的宏定义列表。
+
+　　INCLUDEPATH：应用程序所需的额外的包含路径列表。
+
+　　DEPENDPATH：应用程序所依赖的搜索路径。
 
     VPATH - 寻找补充文件的搜索路径。
 
