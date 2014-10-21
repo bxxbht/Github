@@ -1,0 +1,35 @@
+
+
+[root@localhost HelloWorld]# mkdir aa/bb -p
+[root@localhost HelloWorld]# mv HelloWorld.java ./aa/bb/
+[root@localhost HelloWorld]# javac -d . aa/bb/HelloWorld.java 
+[root@localhost HelloWorld]# ls
+aa
+[root@localhost HelloWorld]# cd aa/bb/
+[root@localhost bb]# ls
+HelloWorld.class  HelloWorld$HiWorld.class  HelloWorld.java
+[root@localhost bb]# java HelloWorld 
+Exception in thread "main" java.lang.NoClassDefFoundError: HelloWorld (wrong name: aa/bb/HelloWorld)
+	at java.lang.ClassLoader.defineClass1(Native Method)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:792)
+	at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+	at java.net.URLClassLoader.defineClass(URLClassLoader.java:449)
+	at java.net.URLClassLoader.access$100(URLClassLoader.java:71)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at sun.launcher.LauncherHelper.checkAndLoadMain(LauncherHelper.java:482)
+[root@localhost bb]# cd ../..
+[root@localhost HelloWorld]# ls
+aa
+[root@localhost HelloWorld]# java aa.bb.HelloWorld 
+欢迎java01班的同学
+
+欢迎java01班的同学
+欢迎java01班的同学
+[root@localhost HelloWorld]# 
+
