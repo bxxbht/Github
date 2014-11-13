@@ -1,0 +1,1 @@
+/usr/local/arm/4.2.2-eabi/usr/bin/arm-linux-g++       CMakeFiles/hellow_fltk.dir/hellow_fltk.o  -o hellow_fltk -rdynamic -L/root/workspace/Tiny-4.02/xc/exports/lib -L/root/fltk-1.1.0b13_ut_arm/lib -lX11 -lXext -lfltk -Wl,-rpath,/root/workspace/Tiny-4.02/xc/exports/lib:/root/fltk-1.1.0b13_ut_arm/lib 
