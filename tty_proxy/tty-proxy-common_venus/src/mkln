@@ -1,0 +1,13 @@
+#! /bin/sh
+
+ln -s tty_proxy0 /dev/ttySAC0
+ln -s tty_proxy1 /dev/ttySAC1
+ln -s tty_proxy2 /dev/ttySAC2
+ln -s tty_proxy3 /dev/ttySAC3
+ln -s tty_proxy4 /dev/ttySS0
+ln -s tty_proxy5 /dev/ttySS1
+ln -s tty_proxy6 /dev/ttySS2
+ln -s tty_proxy7 /dev/ttySS3
+
+ln -s tty_proxy4 /dev/ttySYS
+ln -s tty_proxy5 /dev/ttyTS

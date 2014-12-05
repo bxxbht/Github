@@ -1,0 +1,25 @@
+#! /bin/sh
+
+SERVERIP=192.168.1.196
+
+TTYP_MODULE=driver/ttyp.ko
+
+if [ -f $TTYP_MODULE ]; then
+	./stop
+
+	[ $? != 0 ] && exit 1;
+
+	rmmod $TTYP_MODULE > /dev/null 2>&1
+	insmod $TTYP_MODULE serverip="$SERVERIP" || exit 1
+
+	./src/mkln
+
+	echo "tty 代理服务启动成功!"
+	echo "目标板 ip 地址： $SERVERIP"
+else
+	echo "ERROR: tty 服务未进行预编译，请按以下步骤进行"
+	echo "  step1: 修改目标板的 ip 地址(文件 ip.conf)"
+	echo "  step2: 编译 tty 代理服务"
+	echo "  step3: 更新 root"
+	echo "  step4: 执行 start 脚本"
+fi
