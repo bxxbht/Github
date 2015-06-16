@@ -1,0 +1,1 @@
+arm-linux-g++       CMakeFiles/browser_arm.dir/browser.o  -o browser_arm -rdynamic -L/root/fltk-1.1.0b13_ut_arm_release/lib -L/root/workspace/Tiny-4.02/xc/exports/lib -lfltk -lX11 -lXext -Wl,-rpath,/root/fltk-1.1.0b13_ut_arm_release/lib:/root/workspace/Tiny-4.02/xc/exports/lib 
