@@ -1,1 +1,0 @@
-cmd_/home/xlongfeng/tty-proxy/tty-proxy-common/driver/ttyp.o := ld -m elf_i386   -r -o /home/xlongfeng/tty-proxy/tty-proxy-common/driver/ttyp.o /home/xlongfeng/tty-proxy/tty-proxy-common/driver/kttyp.o /home/xlongfeng/tty-proxy/tty-proxy-common/driver/ksocket.o 
