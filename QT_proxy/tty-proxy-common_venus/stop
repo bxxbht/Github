@@ -1,0 +1,18 @@
+#! /bin/sh
+
+TTYP_MODULE=ttyp.ko
+SKBD_MODULE=skbd.ko
+TS_MODULE=gtouch.ko
+
+TTYP_USED=$(lsmod | grep ttyp | awk '{print $3}')
+
+if [[ $TTYP_USED > 0 ]]; then
+	echo "ERROR: tty 服务正在使用，请现关闭应用程序"
+	exit 1;
+fi
+
+rmmod $SKBD_MODULE > /dev/null 2>&1
+rmmod $TS_MODULE > /dev/null 2>&1
+rmmod $TTYP_MODULE > /dev/null 2>&1
+
+./src/rmln

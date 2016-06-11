@@ -1,0 +1,6 @@
+#! /bin/sh
+
+rm -f /dev/ttySAC*
+rm -f /dev/ttySS*
+rm -f /dev/ttySYS
+rm -f /dev/ttyTS

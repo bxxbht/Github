@@ -1,0 +1,85 @@
+QWidget {
+    color: #FFFFFF;
+    background: #2C3E50;
+    border: none;
+}
+
+QMessageBox {
+    background: #34495E;
+}
+
+QMessageBox QWidget {
+    background: #34495E;
+}
+
+QPushButton {
+    background: #7F8C8D;
+    min-width: 96px;
+    min-height: 24px;
+    padding: 2px;
+    border-radius: 5px;
+}
+
+QPushButton:focus  {
+    color: #2C3E50;
+    background: #F1C40F;
+}
+
+QPushButton:pressed  {
+    color: #2C3E50;
+    background: #F39C12;
+}
+
+QPushButton:disabled {
+    color: #BDC3C7;
+}
+
+QGroupBox {
+    background: #7F8C8D;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+QHeaderView::section {
+    background: #2980B9;
+}
+
+QTreeView:focus {
+    background: #34495E;
+}
+
+QTreeView::item:selected {
+    background: #9B59B6;
+}
+
+QTreeView::item:selected:active {
+    border-top: 1px solid #F1C40F;
+    border-bottom: 1px solid #F1C40F;
+}
+
+QTableView QTableCornerButton::section {
+    background: #2980B9;
+}
+
+QTableView {
+   gridline-color: #95A5A6;
+   alternate-background-color: #34495E;
+}
+
+QProgressBar {
+     text-align: center;
+}
+
+QProgressBar::chunk {
+    background-color: #2ECC71;
+    width: 20px;
+}
+
+QListView {
+    background: #7F8C8D;
+    border-radius: 5px;
+}
+
+QStatusBar {
+    background: #34495E;
+}
