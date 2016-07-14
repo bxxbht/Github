@@ -4,11 +4,15 @@
  
 echo "Start rdesktop ..."
 echo ""
-ipAddr=192.168.7.151
+#ipAddr=192.168.7.123
+ipAddr=130.147.179.178
 user=haitao.b.bao@philips.com
-passwd=Buyaodaohao1#
+passwd=Daohaokechi1#
+size=1800X960
+size1=1200X800
 echo $ipAddr
-rdesktop -g 1800x960 -a32 -f -r clipboard:PRIMARYCLIPBOARD -r sound:local -rdisk:C=/root -c clipboard -u $user -p $passwd $ipAddr &
+#rdesktop -g $size1 -a32 -f -r clipboard:PRIMARYCLIPBOARD -r sound:local -r disk:h=/root -c clipboard -u $user -p $passwd $ipAddr &
+rdesktop -g $size1 -a32 -f -r clipboard:PRIMARYCLIPBOARD -r sound:local -r disk:h=/ -c clipboard -u $user -p $passwd $ipAddr &
 echo "Succeeded!"
  
 sleep 1

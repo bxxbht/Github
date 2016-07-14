@@ -4,7 +4,7 @@
 int main(){
 
 
-char CONSTSTR[]="심박 조율기 탐지 신규 환자";
+char CONSTSTR[]="심박 조율기 탐지 신규 환자 导联 汉字";
 //printf("%s \n",CONSTSTR); 
 char *str = &CONSTSTR[0];
 
@@ -54,5 +54,11 @@ char *str = &CONSTSTR[0];
 			serrior++;
 		}
 */
+char aa[]="愛";
+printf("%s %02x %02x %02x\n",aa,aa[0],aa[1],aa[2]);
+{
+char aa[]="爱";
+printf("%s %02x %02x %02x\n",aa,aa[0],aa[1],aa[2]);
+}
 return 0;
 }
