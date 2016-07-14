@@ -1,0 +1,77 @@
+<!--
+* Copyright (C) 2010-2013, Freescale Semiconductor, Inc. All Rights Reserved.
+* The CFG element contains a list of recognized usb devices.
+*  DEV elements provide a name, class, vid and pid for each device.
+*
+* Each LIST element contains a list of update instructions.
+*  "Install" - Erase media and install firmware.
+*  "Update" - Update firmware only.
+*
+* Each CMD element contains one update instruction of attribute type.
+*  "pull" - Does UtpRead(body, file) transaction.
+*  "push" - Does UtpWrite(body, file) transaction.
+*  "drop" - Does UtpCommand(body) then waits for device to disconnect.
+*  "boot" - Finds configured device, forces it to "body" device and downloads "file".
+*  "find" - Waits for "timeout" seconds for the "body" device to connect.
+*  "show" - Parse and show device info in "file".  
+-->
+
+
+<UCL>
+  <CFG>
+	<STATE name="BootStrap" dev="MX6D" vid="15A2" pid="0061"/>
+	<STATE name="Updater"   dev="MSC" vid="066F" pid="37FF"/> 
+  </CFG>
+
+<LIST name="i.MX6DL-VENUS-Debug" desc="U-boot Debug"> 
+    <CMD state="BootStrap" type="boot" body="BootStrap" file ="../../../../u-boot.bin" >Loading U-boot</CMD> 
+    <CMD state="BootStrap" type="jump" > Jumping to OS image. </CMD> 
+</LIST>
+
+<LIST name="i.MX6DL-VENUS-eMMC" desc="Choose eMMC Linux as media"> 
+    <CMD state="BootStrap" type="boot" body="BootStrap" file ="u-boot.bin" >Loading U-boot</CMD> 
+    <CMD state="BootStrap" type="load" file="uImage" address="0x10800000" 
+        loadSection="OTH" setSection="OTH" HasFlashHeader="FALSE" >Loading Kernel.</CMD> 
+    <CMD state="BootStrap" type="load" file="initramfs.cpio.gz.uboot" address="0x10C00000" 
+        loadSection="OTH" setSection="OTH" HasFlashHeader="FALSE" >Loading Initramfs.</CMD>
+    <CMD state="BootStrap" type="jump" > Jumping to OS image. </CMD> 
+     
+	<CMD state="Updater" type="push" body="$ dd if=/dev/zero of=/dev/mmcblk0 bs=512 seek=1536 count=16">clean up u-boot parameter</CMD>
+	<CMD state="Updater" type="push" body="send" file="../../../../u-boot.bin">Sending U-Boot</CMD>
+	<CMD state="Updater" type="push" body="$ dd if=$FILE of=/dev/mmcblk0 bs=512 seek=2 skip=2">write U-Boot to sd card</CMD>
+
+    <CMD state="Updater" type="push" body="send" file="../../../../uImage">Sending kernel uImage</CMD> 
+    <CMD state="Updater" type="push" body="$ dd if=$FILE of=/dev/mmcblk0 bs=1M seek=1 conv=fsync">write kernel image to sd card</CMD> 
+	     
+    <CMD state="Updater" type="push" body="send" file="mksdcard.sh.tar">Sending partition shell</CMD> 
+    <CMD state="Updater" type="push" body="$ tar xf $FILE "> Partitioning...</CMD> 
+    <CMD state="Updater" type="push" body="$ sh mksdcard.sh /dev/mmcblk0"> Partitioning...</CMD> 
+ 
+    <CMD state="Updater" type="push" body="$ mkfs.ext3 -j /dev/mmcblk0p1">Formatting rootfs partition</CMD> 
+    <CMD state="Updater" type="push" body="$ mkdir -p /mnt/mmcblk0p1"/>  
+    <CMD state="Updater" type="push" body="$ mount -t ext3 /dev/mmcblk0p1 /mnt/mmcblk0p1"/>
+	<CMD state="Updater" type="push" body="$ mkdir -p /mnt/ext2"/>
+	
+	<CMD state="Updater" type="push" body="send" file="../../../../rootfs.ext2.gz">Sending rootfs...</CMD> 
+	<CMD state="Updater" type="push" body="$ mv $FILE /tmp/rootfs.ext2.gz">Move rootfs</CMD>
+    <CMD state="Updater" type="push" body="$ gunzip /tmp/rootfs.ext2.gz">Uncompress rootfs...</CMD>
+	<CMD state="Updater" type="push" body="$ mount -t ext2 -o loop /tmp/rootfs.ext2 /mnt/ext2"/>
+	<CMD state="Updater" type="push" body="$ cp -a /mnt/ext2/* /mnt/mmcblk0p1">Copying rootfs...</CMD>
+	<CMD state="Updater" type="push" body="$ umount /mnt/ext2">Umount rootfs...</CMD>
+	<CMD state="Updater" type="push" body="$ rm /tmp/rootfs.ext2">Remove rootfs.ext2</CMD>
+	
+	<CMD state="Updater" type="push" body="send" file="../../../../app.ext2.gz">Sending application...</CMD> 
+	<CMD state="Updater" type="push" body="$ mv $FILE /tmp/app.ext2.gz">Move application</CMD>
+    <CMD state="Updater" type="push" body="$ gunzip /tmp/app.ext2.gz">Uncompress application...</CMD>
+	<CMD state="Updater" type="push" body="$ mount -t ext2 -o loop /tmp/app.ext2 /mnt/ext2"/>
+	<CMD state="Updater" type="push" body="$ mkdir -p /mnt/mmcblk0p1/appdir"/>
+	<CMD state="Updater" type="push" body="$ cp -a /mnt/ext2/* /mnt/mmcblk0p1/appdir">Copying application...</CMD>
+	<CMD state="Updater" type="push" body="$ umount /mnt/ext2">Umount application...</CMD>
+	<CMD state="Updater" type="push" body="$ rm /tmp/app.ext2">Remove app.ext2</CMD>
+	
+    <CMD state="Updater" type="push" body="frf">Finishing rootfs write</CMD>
+    <CMD state="Updater" type="push" body="$ umount /mnt/mmcblk0p1">Unmounting rootfs partition</CMD> 
+    <CMD state="Updater" type="push" body="$ echo Update Complete!">Done</CMD>
+</LIST>
+
+</UCL>

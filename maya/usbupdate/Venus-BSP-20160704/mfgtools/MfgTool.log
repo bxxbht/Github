@@ -1,0 +1,12 @@
+DLL version: 2.2.3
+Wednesday, July 13, 2016 11:30:44   Start new logging
+ModuleID[2] LevelID[10]: CMyExceptionHandler thread is running
+ModuleID[2] LevelID[1]: new MxHidDeviceClass
+ModuleID[2] LevelID[10]: Device Manager thread is running
+ModuleID[2] LevelID[10]: CCmdOpreation[0] thread is Closed
+ModuleID[2] LevelID[10]: CCmdOpreation[0] thread is Closed
+ModuleID[2] LevelID[10]: DeviceManager::OnMsgDeviceEvent() - EVENT_KILL
+ModuleID[2] LevelID[10]: CMyExceptionHandler::OnMsgExceptionEvent() - KillExceptionHandlerThread
+ModuleID[2] LevelID[10]: Exception Handler thread is closed
+ModuleID[2] LevelID[1]: delete MxHidDeviceClass
+ModuleID[2] LevelID[10]: Device Manager thread is closed
