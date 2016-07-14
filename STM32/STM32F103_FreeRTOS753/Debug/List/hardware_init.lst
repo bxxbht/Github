@@ -1,0 +1,298 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     17/Dec/2013  09:01:04 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\pragram\STM32F103_FreeRTOS\user_task\hardware_init.c  #
+#    Command line =  D:\pragram\STM32F103_FreeRTOS\user_task\hardware_init.c  #
+#                    -D IAR_ARM_CM3 -lcN D:\pragram\STM32F103_FreeRTOS\Debug\ #
+#                    List\ --diag_suppress Pa082,pe191 -o                     #
+#                    D:\pragram\STM32F103_FreeRTOS\Debug\Obj\ --no_cse        #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_clustering --no_scheduling --debug --endian=little  #
+#                    --cpu=Cortex-M3 -e --fpu=None --dlib_config "D:\Program  #
+#                    Files\IAR Systems\Embedded Workbench                     #
+#                    6.4\arm\INC\c\DLib_Config_Full.h" -I                     #
+#                    D:\pragram\STM32F103_FreeRTOS\.\ -I                      #
+#                    D:\pragram\STM32F103_FreeRTOS\STM32F10x_StdPeriph_Lib_V3 #
+#                    .5.0\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I        #
+#                    D:\pragram\STM32F103_FreeRTOS\Source\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\Common\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\CMSIS\ -I                  #
+#                    D:\pragram\STM32F103_FreeRTOS\user_task\ -I              #
+#                    D:\pragram\STM32F103_FreeRTOS\test_task\ -Ol             #
+#                    --use_c++_inline                                         #
+#    List file    =  D:\pragram\STM32F103_FreeRTOS\Debug\List\hardware_init.l #
+#                    st                                                       #
+#    Object file  =  D:\pragram\STM32F103_FreeRTOS\Debug\Obj\hardware_init.o  #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\pragram\STM32F103_FreeRTOS\user_task\hardware_init.c
+      1          
+      2          
+      3          #include "macros.h"
+      4          #include "hardware_init.h"
+      5          #include "stm32f10x_it.h"
+      6          #include "task_test.h"
+      7          /*-----------------------------------------------------------*/
+      8          //***************************************************************************
+      9          // - function: Configure STM32 System's RCC
+     10          // - function module: RCC Configure operation
+     11          // - input£ºnone
+     12          // - return:none
+     13          // - comment£ºthis function ported from STM32 official Example
+     14          // -          to use external or internal clock 
+     15          // -          please set or reset the macros_HSI_CLK_ _HSE_CLK_
+     16          // - current Configuration:
+     17          // - HCLK = 36 MHz
+     18          // - PCLK1 = 36 MHz/2 = 18 MHz
+     19          // - PCLK2 = 36 MHz
+     20          // - PLL = 36MHz
+     21          //***************************************************************************
+     22          void RCC_Configuration(void)
+     23          {
+     24             /* RCC system reset(for debug purpose) */
+     25            RCC_DeInit();
+     26            
+     27          #ifdef _HSE_CLK_ // USE EXTERNAL CLOCK
+     28            // Enable HSE 
+     29            RCC_HSEConfig(RCC_HSE_ON);
+     30            
+     31            ErrorStatus HSEStartUpStatus;
+     32            
+     33            //Wait till HSE is ready 
+     34            HSEStartUpStatus = RCC_WaitForHSEStartUp();
+     35          
+     36            if(HSEStartUpStatus == SUCCESS)
+     37            {
+     38              // Enable Prefetch Buffer 
+     39              FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
+     40          
+     41              // Flash 2 wait state 
+     42              FLASH_SetLatency(FLASH_Latency_2);
+     43           	
+     44              // HCLK = SYSCLK 72MHz
+     45              RCC_HCLKConfig(RCC_SYSCLK_Div1); 
+     46            
+     47              // PCLK2 = HCLK  
+     48              // if APB2 Prescaler=1,TIM1_CLK = PCLK1
+     49              // else APB2 Prescaler=OTHERS,TIM1_CLK = 2*PCLK1
+     50              RCC_PCLK2Config(RCC_HCLK_Div1); 
+     51          
+     52              // PCLK1 = HCLK/2 36MHz
+     53              // if APB1 Prescaler=1,TIMx_CLK = PCLK1
+     54              // else APB1 Prescaler=OTHERS,TIMx_CLK = 2*PCLK1
+     55              RCC_PCLK1Config(RCC_HCLK_Div2);
+     56          
+     57              // PLLCLK = 8MHz * 9 = 72 MHz 
+     58              RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
+     59          
+     60              // Enable PLL 
+     61              RCC_PLLCmd(ENABLE);
+     62          
+     63              // Wait till PLL is ready 
+     64              while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
+     65              {
+     66              }
+     67          
+     68              // Select PLL as system clock source 
+     69              RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+     70          
+     71              // Wait till PLL is used as system clock source 
+     72              while(RCC_GetSYSCLKSource() != 0x08)
+     73              {
+     74              }
+     75            }
+     76          #endif
+     77            
+     78          #ifdef _HSI_CLK_ // USE INTERNAL CLOCK
+     79            // 8 MHz HSI ENABLE
+     80            RCC_HSICmd(ENABLE);
+     81            // Wait till HSE is ready 
+     82            while(RCC_GetFlagStatus(RCC_FLAG_HSIRDY) == RESET)
+     83            {
+     84              
+     85            }
+     86             if(1)
+     87            {
+     88             
+     89              FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
+     90              FLASH_SetLatency(FLASH_Latency_2);
+     91             
+     92              //HCLK = 36 MHz
+     93              RCC_HCLKConfig(RCC_SYSCLK_Div1);
+     94              
+     95              //PCLK2 = 36 MHz
+     96              // if APB2 Prescaler=1,TIM1_CLK = PCLK2
+     97              // else APB2 Prescaler=OTHERS,TIM1_CLK = 2*PCLK2
+     98              RCC_PCLK2Config(RCC_HCLK_Div1);
+     99              
+    100              //PCLK1 = 36 MHz/2 = 18 MHz,up to 36MHz  timer4 related
+    101              // if APB1 Prescaler=1,TIMx_CLK = PCLK1
+    102              // else APB1 Prescaler=OTHERS,TIMx_CLK = 2*PCLK2
+    103              RCC_PCLK1Config(RCC_HCLK_Div2);
+    104              
+    105              //SET PLL CLOCK SOURCE AND FREQUENCY MULTIPLIER
+    106              // 8MHz /2 * 9 = 36 MHz ST MAXIMUM PLL FREQUENCY UPTO 36MHz
+    107              RCC_PLLConfig(RCC_PLLSource_HSI_Div2, RCC_PLLMul_9);
+    108            
+    109                          
+    110              //TO ENABLE PLL 
+    111              RCC_PLLCmd(ENABLE);//IF PLL USED AS SYS CLK,IT CAN NOT BE ENABLED
+    112              
+    113              //WAIT FOR PLL CLK SOURCE READY
+    114              while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
+    115              {
+    116              }
+    117          
+    118              //SET SYS CLK,CONFIG PLL AS SYS CLK
+    119              RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+    120            
+    121              //WAIT FOR PLL CONFIG AS SYS CLK SUCCESSFULLY
+    122              //  0x00£ºHSI CONFIGED SYS CLK
+    123              //  0x04£ºHSE CONFIGED SYS CLK
+    124              //  0x08£ºPLL CONFIGED SYS CLK  
+    125              while(RCC_GetSYSCLKSource() != 0x08)
+    126              {
+    127              }
+    128            }
+    129          #endif
+    130            //ENABLE TIM4 CLOCK 
+    131            //THIS STATEMENT SHOULD BE MODIFIED IF HARDWARE CHANGED
+    132          }
+    133          //***************************************************************************
+    134          // - function: STM32'S NVIC Init;
+    135          // - function module: NVIC operation
+    136          // - input£ºnone
+    137          // - return:none
+    138          // - comment£ºthis function ported from STM32 official Example
+    139          //***************************************************************************
+    140          void NVIC_Configuration(void)
+    141          {
+    142            #ifdef  VECT_TAB_RAM  
+    143              /* Set the Vector Table base location at 0x20000000 */ 
+    144              NVIC_SetVectorTable(NVIC_VectTab_RAM, 0x0); 
+    145            #else  /* VECT_TAB_FLASH  */
+    146              /* Set the Vector Table base location at 0x08000000 */ 
+    147              NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);   
+    148            #endif  
+    149              NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+    150          }
+    151          //***************************************************************************
+    152          // - function: STM32'S GPIO Main Configuration;
+    153          // - function module: GPIO Main operation
+    154          // - input£ºnone
+    155          // - return:none
+    156          // - comment£ºthis function ported from STM32 official Example
+    157          //***************************************************************************
+    158          void GPIO_Configuration(void)
+    159          {
+    160            /*
+    161               Configure all unused GPIO port pins in Analog Input mode (floating input
+    162               trigger OFF), this will reduce the power consumption and increase the device
+    163               immunity against EMI/EMC
+    164            */
+    165            GPIO_InitTypeDef GPIO_InitStructure;
+    166           
+    167            //////////////////////////////////////////////////////////////////////////////
+    168            //--------------------------------------------------------------------------//
+    169            //////////////////////////////////////////////////////////////////////////////
+    170            
+    171            RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB |
+    172                                   RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD |
+    173                                   RCC_APB2Periph_GPIOE | RCC_APB2Periph_GPIOF |
+    174                                   RCC_APB2Periph_GPIOG, ENABLE);
+    175          
+    176            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
+    177            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+    178            GPIO_Init(GPIOA, &GPIO_InitStructure);
+    179            GPIO_Init(GPIOB, &GPIO_InitStructure);
+    180            GPIO_Init(GPIOC, &GPIO_InitStructure);
+    181            GPIO_Init(GPIOD, &GPIO_InitStructure);
+    182            GPIO_Init(GPIOE, &GPIO_InitStructure);
+    183            GPIO_Init(GPIOF, &GPIO_InitStructure);
+    184            GPIO_Init(GPIOG, &GPIO_InitStructure);
+    185            RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB |
+    186                                   RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD |
+    187                                   RCC_APB2Periph_GPIOE | RCC_APB2Periph_GPIOF |
+    188                                   RCC_APB2Periph_GPIOG, DISABLE);    
+    189          }
+    190          
+    191          //***************************************************************************
+    192          // - function: STM32'S Debug Led Control Pin Inits;
+    193          // - function module: Debug Led Control Operation
+    194          // - input£ºnone
+    195          // - return:none
+    196          // - comment£ºTo Close and Debug Led ,use PR_Debug_LEDx_ON/OFF();
+    197          //***************************************************************************
+    198          void APP_GPIO_Led_Init(void)
+    199          {
+    200            //-------------------------- CONFIG RCC For GPIOA --------------------------//
+    201            RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);  
+    202            
+    203            
+    204            //-------------------------- CONFIG GPIO FOR LED DEBUG --------------------------//
+    205            GPIO_InitTypeDef GPIO_InitStructure;
+    206            GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_DEBUGLED1 | GPIO_Pin_DEBUGLED2;
+    207            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    208            GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+    209            GPIO_Init(GPIO_LED, &GPIO_InitStructure);
+    210          
+    211          }
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  APP_GPIO_Led_Init
+             8 -> GPIO_Init
+             8 -> RCC_APB2PeriphClockCmd
+        8  GPIO_Configuration
+             8 -> GPIO_Init
+             8 -> RCC_APB2PeriphClockCmd
+        8  NVIC_Configuration
+             8 -> NVIC_PriorityGroupConfig
+             8 -> NVIC_SetVectorTable
+        8  RCC_Configuration
+             8 -> FLASH_PrefetchBufferCmd
+             8 -> FLASH_SetLatency
+             8 -> RCC_DeInit
+             8 -> RCC_GetFlagStatus
+             8 -> RCC_GetSYSCLKSource
+             8 -> RCC_HCLKConfig
+             8 -> RCC_HSEConfig
+             8 -> RCC_PCLK1Config
+             8 -> RCC_PCLK2Config
+             8 -> RCC_PLLCmd
+             8 -> RCC_PLLConfig
+             8 -> RCC_SYSCLKConfig
+             8 -> RCC_WaitForHSEStartUp
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable1
+       4  ??DataTable1_1
+       4  ??DataTable1_2
+       4  ??DataTable1_3
+       4  ??DataTable1_4
+       4  ??DataTable1_5
+       4  ??DataTable1_6
+      38  APP_GPIO_Led_Init
+      94  GPIO_Configuration
+      22  NVIC_Configuration
+     100  RCC_Configuration
+
+ 
+ 282 bytes in section .text
+ 
+ 282 bytes of CODE memory
+
+Errors: none
+Warnings: none

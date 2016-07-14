@@ -1,0 +1,189 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     17/Dec/2013  09:01:39 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\pragram\STM32F103_FreeRTOS\test_task\task_test.c      #
+#    Command line =  D:\pragram\STM32F103_FreeRTOS\test_task\task_test.c -D   #
+#                    IAR_ARM_CM3 -lcN D:\pragram\STM32F103_FreeRTOS\Debug\Lis #
+#                    t\ --diag_suppress Pa082,pe191 -o                        #
+#                    D:\pragram\STM32F103_FreeRTOS\Debug\Obj\ --no_cse        #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_clustering --no_scheduling --debug --endian=little  #
+#                    --cpu=Cortex-M3 -e --fpu=None --dlib_config "D:\Program  #
+#                    Files\IAR Systems\Embedded Workbench                     #
+#                    6.4\arm\INC\c\DLib_Config_Full.h" -I                     #
+#                    D:\pragram\STM32F103_FreeRTOS\.\ -I                      #
+#                    D:\pragram\STM32F103_FreeRTOS\STM32F10x_StdPeriph_Lib_V3 #
+#                    .5.0\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I        #
+#                    D:\pragram\STM32F103_FreeRTOS\Source\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\Common\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\CMSIS\ -I                  #
+#                    D:\pragram\STM32F103_FreeRTOS\user_task\ -I              #
+#                    D:\pragram\STM32F103_FreeRTOS\test_task\ -Ol             #
+#                    --use_c++_inline                                         #
+#    List file    =  D:\pragram\STM32F103_FreeRTOS\Debug\List\task_test.lst   #
+#    Object file  =  D:\pragram\STM32F103_FreeRTOS\Debug\Obj\task_test.o      #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\pragram\STM32F103_FreeRTOS\test_task\task_test.c
+      1          
+      2          #include "FreeRTOS.h"
+      3          #include "task_test.h"
+      4          #include "task.h"
+      5          #include "stm32f10x.h"
+      6          #include "serial_init.h"
+      7          #include "semphr.h"
+      8          #include "macros.h"
+      9          
+     10          
+     11          void LED1_FLASH( void * pvParameters )
+     12          {
+     13              unsigned portBASE_TYPE uxFLAG;
+     14          	( void ) pvParameters;// The parameters are not used.
+     15          	for(;;)
+     16          	{
+     17                  vTaskDelay(1);
+     18          		if(uxFLAG >=1)
+     19                  {
+     20                       PR_LED1_ON();
+     21                       uxFLAG = 0;
+     22                  }
+     23                  else
+     24                  {
+     25                      PR_LED1_OFF();
+     26                      uxFLAG = 1;
+     27                  }
+     28          #ifdef semphore_mutex_test
+     29                  // See if we can obtain the semaphore.  If the semaphore is not available
+     30                  // wait 10 ticks to see if it becomes free.	
+     31                  //if( xSemaphoreTake( xSemaphore_serial_mutex, ( portTickType ) 10 ) == pdTRUE )
+     32                  {// We were able to obtain the semaphore and can now access theshared resource.
+     33                      APP_Serial_TxBuffer_Write("LED1_FLASH\n",11);
+     34                    // We have finished accessing the shared resource.  Release the semaphore.
+     35                      //xSemaphoreGive( xSemaphore_serial_mutex );
+     36                  }
+     37                  //else
+     38                  {
+     39                      // We could not obtain the semaphore and can therefore not access
+     40                      // the shared resource safely.
+     41                  }
+     42          #endif        
+     43          	}
+     44          }
+     45          
+     46          void LED2_FLASH( void * pvParameters )
+     47          {
+     48              unsigned portBASE_TYPE uxFLAG;
+     49          
+     50          	( void ) pvParameters;// The parameters are not used.
+     51          
+     52          	for(;;)
+     53          	{
+     54          		vTaskDelay(500);
+     55          		if(uxFLAG >=1)
+     56                  {
+     57                       PR_LED2_ON();
+     58                       uxFLAG = 0;
+     59                  }
+     60                  else
+     61                  {
+     62                      PR_LED2_OFF();
+     63                      uxFLAG = 1;
+     64                  }
+     65          #ifdef semphore_mutex_test
+     66                  //if( xSemaphoreTake( xSemaphore_serial_mutex, ( portTickType ) 10 ) == pdTRUE )
+     67                  {// We were able to obtain the semaphore and can now access theshared resource.
+     68                      APP_Serial_TxBuffer_Write("LED2_FLASH\n",11);
+     69                    // We have finished accessing the shared resource.  Release the semaphore.
+     70                      //xSemaphoreGive( xSemaphore_serial_mutex );
+     71                  }
+     72                  //else
+     73                  {
+     74                      // We could not obtain the semaphore and can therefore not access
+     75                      // the shared resource safely.
+     76                  }
+     77          #endif
+     78          	}
+     79          }
+     80          
+     81          //this function is callea by application,not task.
+     82          unsigned char g_led_flash_flag;
+     83          void app_led1_flash(void)
+     84          {
+     85               if(g_led_flash_flag)
+     86               {
+     87                   g_led_flash_flag=0;
+     88                   PR_LED1_ON();
+     89               }
+     90               else
+     91               {
+     92                   g_led_flash_flag=1;
+     93                   PR_LED1_OFF();
+     94               }    
+     95          }
+     96          
+     97          void SerialTx(void * pvParameters)
+     98          {
+     99              ( void ) pvParameters;// The parameters are not used.
+    100              for(;;)
+    101              {
+    102                  vTaskDelay(3);
+    103                  if( g_Serial.mSendNum >0)
+    104                  {
+    105                     Enable_Usart1_TxIt();
+    106                  }
+    107             }
+    108          }
+    109          
+    110          
+    111          
+    112          
+    113          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        0  LED1_FLASH
+             0 -> GPIO_ResetBits
+             0 -> GPIO_SetBits
+             0 -> vTaskDelay
+        0  LED2_FLASH
+             0 -> GPIO_ResetBits
+             0 -> GPIO_SetBits
+             0 -> vTaskDelay
+        0  SerialTx
+             0 -> Enable_Usart1_TxIt
+             0 -> vTaskDelay
+        8  app_led1_flash
+             8 -> GPIO_ResetBits
+             8 -> GPIO_SetBits
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable3
+       4  ??DataTable3_1
+       4  ??DataTable3_2
+      34  LED1_FLASH
+      36  LED2_FLASH
+      20  SerialTx
+      42  app_led1_flash
+       1  g_led_flash_flag
+
+ 
+   1 byte  in section .bss
+ 144 bytes in section .text
+ 
+ 144 bytes of CODE memory
+   1 byte  of DATA memory
+
+Errors: none
+Warnings: none

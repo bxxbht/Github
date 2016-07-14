@@ -1,0 +1,271 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     22/Nov/2013  11:50:46 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\pragram\STM32F103_FreeRTOS\Common\Minimal\integer.c   #
+#    Command line =  D:\pragram\STM32F103_FreeRTOS\Common\Minimal\integer.c   #
+#                    -D IAR_ARM_CM3 -lcN D:\pragram\STM32F103_FreeRTOS\Debug\ #
+#                    List\ --diag_suppress Pa082,pe191 -o                     #
+#                    D:\pragram\STM32F103_FreeRTOS\Debug\Obj\ --no_cse        #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_clustering --no_scheduling --debug --endian=little  #
+#                    --cpu=Cortex-M3 -e --fpu=None --dlib_config "D:\Program  #
+#                    Files\IAR Systems\Embedded Workbench                     #
+#                    6.4\arm\INC\c\DLib_Config_Full.h" -I                     #
+#                    D:\pragram\STM32F103_FreeRTOS\.\ -I                      #
+#                    D:\pragram\STM32F103_FreeRTOS\STM32F10x_StdPeriph_Lib_V3 #
+#                    .5.0\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I        #
+#                    D:\pragram\STM32F103_FreeRTOS\Source\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\Common\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\CMSIS\ -I                  #
+#                    D:\pragram\STM32F103_FreeRTOS\user_task\ -I              #
+#                    D:\pragram\STM32F103_FreeRTOS\test_task\ -Ol             #
+#                    --use_c++_inline                                         #
+#    List file    =  D:\pragram\STM32F103_FreeRTOS\Debug\List\integer.lst     #
+#    Object file  =  D:\pragram\STM32F103_FreeRTOS\Debug\Obj\integer.o        #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\pragram\STM32F103_FreeRTOS\Common\Minimal\integer.c
+      1          /*
+      2              FreeRTOS V7.5.3 - Copyright (C) 2013 Real Time Engineers Ltd. 
+      3              All rights reserved
+      4          
+      5              VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
+      6          
+      7              ***************************************************************************
+      8               *                                                                       *
+      9               *    FreeRTOS provides completely free yet professionally developed,    *
+     10               *    robust, strictly quality controlled, supported, and cross          *
+     11               *    platform software that has become a de facto standard.             *
+     12               *                                                                       *
+     13               *    Help yourself get started quickly and support the FreeRTOS         *
+     14               *    project by purchasing a FreeRTOS tutorial book, reference          *
+     15               *    manual, or both from: http://www.FreeRTOS.org/Documentation        *
+     16               *                                                                       *
+     17               *    Thank you!                                                         *
+     18               *                                                                       *
+     19              ***************************************************************************
+     20          
+     21              This file is part of the FreeRTOS distribution.
+     22          
+     23              FreeRTOS is free software; you can redistribute it and/or modify it under
+     24              the terms of the GNU General Public License (version 2) as published by the
+     25              Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+     26          
+     27              >>! NOTE: The modification to the GPL is included to allow you to distribute
+     28              >>! a combined work that includes FreeRTOS without being obliged to provide
+     29              >>! the source code for proprietary components outside of the FreeRTOS
+     30              >>! kernel.
+     31          
+     32              FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
+     33              WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     34              FOR A PARTICULAR PURPOSE.  Full license text is available from the following
+     35              link: http://www.freertos.org/a00114.html
+     36          
+     37              1 tab == 4 spaces!
+     38          
+     39              ***************************************************************************
+     40               *                                                                       *
+     41               *    Having a problem?  Start by reading the FAQ "My application does   *
+     42               *    not run, what could be wrong?"                                     *
+     43               *                                                                       *
+     44               *    http://www.FreeRTOS.org/FAQHelp.html                               *
+     45               *                                                                       *
+     46              ***************************************************************************
+     47          
+     48              http://www.FreeRTOS.org - Documentation, books, training, latest versions,
+     49              license and Real Time Engineers Ltd. contact details.
+     50          
+     51              http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
+     52              including FreeRTOS+Trace - an indispensable productivity tool, a DOS
+     53              compatible FAT file system, and our tiny thread aware UDP/IP stack.
+     54          
+     55              http://www.OpenRTOS.com - Real Time Engineers ltd license FreeRTOS to High
+     56              Integrity Systems to sell under the OpenRTOS brand.  Low cost OpenRTOS
+     57              licenses offer ticketed support, indemnification and middleware.
+     58          
+     59              http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+     60              engineered and independently SIL3 certified version for use in safety and
+     61              mission critical applications that require provable dependability.
+     62          
+     63              1 tab == 4 spaces!
+     64          */
+     65          
+     66          /*
+     67           * Creates one or more tasks that repeatedly perform a set of integer
+     68           * calculations.  The result of each run-time calculation is compared to the 
+     69           * known expected result - with a mismatch being indicative of an error in the
+     70           * context switch mechanism.
+     71           */
+     72          
+     73          #include <stdlib.h>
+     74          
+     75          /* Scheduler include files. */
+     76          #include "FreeRTOS.h"
+     77          #include "task.h"
+     78          
+     79          /* Demo program include files. */
+     80          #include "integer.h"
+     81          
+     82          /* The constants used in the calculation. */
+     83          #define intgCONST1				( ( long ) 123 )
+     84          #define intgCONST2				( ( long ) 234567 )
+     85          #define intgCONST3				( ( long ) -3 )
+     86          #define intgCONST4				( ( long ) 7 )
+     87          #define intgEXPECTED_ANSWER		( ( ( intgCONST1 + intgCONST2 ) * intgCONST3 ) / intgCONST4 )
+     88          
+     89          #define intgSTACK_SIZE			configMINIMAL_STACK_SIZE
+     90          
+     91          /* As this is the minimal version, we will only create one task. */
+     92          #define intgNUMBER_OF_TASKS		( 1 )
+     93          
+     94          /* The task function.  Repeatedly performs a 32 bit calculation, checking the
+     95          result against the expected result.  If the result is incorrect then the
+     96          context switch must have caused some corruption. */
+     97          static portTASK_FUNCTION_PROTO( vCompeteingIntMathTask, pvParameters );
+     98          
+     99          /* Variables that are set to true within the calculation task to indicate
+    100          that the task is still executing.  The check task sets the variable back to
+    101          false, flagging an error if the variable is still false the next time it
+    102          is called. */
+    103          static volatile signed portBASE_TYPE xTaskCheck[ intgNUMBER_OF_TASKS ] = { ( signed portBASE_TYPE ) pdFALSE };
+    104          
+    105          /*-----------------------------------------------------------*/
+    106          
+    107          void vStartIntegerMathTasks( unsigned portBASE_TYPE uxPriority )
+    108          {
+    109          short sTask;
+    110          
+    111          	for( sTask = 0; sTask < intgNUMBER_OF_TASKS; sTask++ )
+    112          	{
+    113          		xTaskCreate( vCompeteingIntMathTask, ( signed char * ) "IntMath", intgSTACK_SIZE, ( void * ) &( xTaskCheck[ sTask ] ), uxPriority, ( xTaskHandle * ) NULL );
+    114          	}
+    115          }
+    116          /*-----------------------------------------------------------*/
+    117          
+    118          static portTASK_FUNCTION( vCompeteingIntMathTask, pvParameters )
+    119          {
+    120          /* These variables are all effectively set to constants so they are volatile to
+    121          ensure the compiler does not just get rid of them. */
+    122          volatile long lValue;
+    123          short sError = pdFALSE;
+    124          volatile signed portBASE_TYPE *pxTaskHasExecuted;
+    125          
+    126          	/* Set a pointer to the variable we are going to set to true each
+    127          	iteration.  This is also a good test of the parameter passing mechanism
+    128          	within each port. */
+    129          	pxTaskHasExecuted = ( volatile signed portBASE_TYPE * ) pvParameters;
+    130          
+    131          	/* Keep performing a calculation and checking the result against a constant. */
+    132          	for( ;; )
+    133          	{
+    134          		/* Perform the calculation.  This will store partial value in
+    135          		registers, resulting in a good test of the context switch mechanism. */
+    136          		lValue = intgCONST1;
+    137          		lValue += intgCONST2;
+    138          
+    139          		/* Yield in case cooperative scheduling is being used. */
+    140          		#if configUSE_PREEMPTION == 0
+    141          		{
+    142          			taskYIELD();
+    143          		}
+    144          		#endif
+    145          
+    146          		/* Finish off the calculation. */
+    147          		lValue *= intgCONST3;
+    148          		lValue /= intgCONST4;
+    149          
+    150          		/* If the calculation is found to be incorrect we stop setting the 
+    151          		TaskHasExecuted variable so the check task can see an error has 
+    152          		occurred. */
+    153          		if( lValue != intgEXPECTED_ANSWER ) /*lint !e774 volatile used to prevent this being optimised out. */
+    154          		{
+    155          			sError = pdTRUE;
+    156          		}
+    157          
+    158          		if( sError == pdFALSE )
+    159          		{
+    160          			/* We have not encountered any errors, so set the flag that show
+    161          			we are still executing.  This will be periodically cleared by
+    162          			the check task. */
+    163          			portENTER_CRITICAL();
+    164          				*pxTaskHasExecuted = pdTRUE;
+    165          			portEXIT_CRITICAL();
+    166          		}
+    167          
+    168          		/* Yield in case cooperative scheduling is being used. */
+    169          		#if configUSE_PREEMPTION == 0
+    170          		{
+    171          			taskYIELD();
+    172          		}
+    173          		#endif
+    174          	}
+    175          }
+    176          /*-----------------------------------------------------------*/
+    177          
+    178          /* This is called to check that all the created tasks are still running. */
+    179          portBASE_TYPE xAreIntegerMathsTaskStillRunning( void )
+    180          {
+    181          portBASE_TYPE xReturn = pdTRUE;
+    182          short sTask;
+    183          
+    184          	/* Check the maths tasks are still running by ensuring their check variables 
+    185          	are still being set to true. */
+    186          	for( sTask = 0; sTask < intgNUMBER_OF_TASKS; sTask++ )
+    187          	{
+    188          		if( xTaskCheck[ sTask ] == pdFALSE )
+    189          		{
+    190          			/* The check has not incremented so an error exists. */
+    191          			xReturn = pdFALSE;
+    192          		}
+    193          
+    194          		/* Reset the check variable so we can tell if it has been set by
+    195          		the next time around. */
+    196          		xTaskCheck[ sTask ] = pdFALSE;
+    197          	}
+    198          
+    199          	return xReturn;
+    200          }
+    201          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  vCompeteingIntMathTask
+              8 -> vPortEnterCritical
+              8 -> vPortExitCritical
+       32  vStartIntegerMathTasks
+             32 -> xTaskGenericCreate
+        0  xAreIntegerMathsTaskStillRunning
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       8  ?<Constant "IntMath">
+       4  ??DataTable2
+       4  ??DataTable2_1
+       4  ??DataTable2_2
+      70  vCompeteingIntMathTask
+      56  vStartIntegerMathTasks
+      40  xAreIntegerMathsTaskStillRunning
+       4  xTaskCheck
+
+ 
+   4 bytes in section .bss
+   8 bytes in section .rodata
+ 178 bytes in section .text
+ 
+ 178 bytes of CODE  memory
+   8 bytes of CONST memory
+   4 bytes of DATA  memory
+
+Errors: none
+Warnings: none

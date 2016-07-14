@@ -1,0 +1,276 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     22/Nov/2013  11:50:51 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\pragram\STM32F103_FreeRTOS\timertest.c                #
+#    Command line =  D:\pragram\STM32F103_FreeRTOS\timertest.c -D             #
+#                    IAR_ARM_CM3 -lcN D:\pragram\STM32F103_FreeRTOS\Debug\Lis #
+#                    t\ --diag_suppress Pa082,pe191 -o                        #
+#                    D:\pragram\STM32F103_FreeRTOS\Debug\Obj\ --no_cse        #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_clustering --no_scheduling --debug --endian=little  #
+#                    --cpu=Cortex-M3 -e --fpu=None --dlib_config "D:\Program  #
+#                    Files\IAR Systems\Embedded Workbench                     #
+#                    6.4\arm\INC\c\DLib_Config_Full.h" -I                     #
+#                    D:\pragram\STM32F103_FreeRTOS\.\ -I                      #
+#                    D:\pragram\STM32F103_FreeRTOS\STM32F10x_StdPeriph_Lib_V3 #
+#                    .5.0\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I        #
+#                    D:\pragram\STM32F103_FreeRTOS\Source\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\Common\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\CMSIS\ -I                  #
+#                    D:\pragram\STM32F103_FreeRTOS\user_task\ -I              #
+#                    D:\pragram\STM32F103_FreeRTOS\test_task\ -Ol             #
+#                    --use_c++_inline                                         #
+#    List file    =  D:\pragram\STM32F103_FreeRTOS\Debug\List\timertest.lst   #
+#    Object file  =  D:\pragram\STM32F103_FreeRTOS\Debug\Obj\timertest.o      #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\pragram\STM32F103_FreeRTOS\timertest.c
+      1          /*
+      2              FreeRTOS V7.5.3 - Copyright (C) 2013 Real Time Engineers Ltd. 
+      3              All rights reserved
+      4          
+      5              VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
+      6          
+      7              ***************************************************************************
+      8               *                                                                       *
+      9               *    FreeRTOS provides completely free yet professionally developed,    *
+     10               *    robust, strictly quality controlled, supported, and cross          *
+     11               *    platform software that has become a de facto standard.             *
+     12               *                                                                       *
+     13               *    Help yourself get started quickly and support the FreeRTOS         *
+     14               *    project by purchasing a FreeRTOS tutorial book, reference          *
+     15               *    manual, or both from: http://www.FreeRTOS.org/Documentation        *
+     16               *                                                                       *
+     17               *    Thank you!                                                         *
+     18               *                                                                       *
+     19              ***************************************************************************
+     20          
+     21              This file is part of the FreeRTOS distribution.
+     22          
+     23              FreeRTOS is free software; you can redistribute it and/or modify it under
+     24              the terms of the GNU General Public License (version 2) as published by the
+     25              Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+     26          
+     27              >>! NOTE: The modification to the GPL is included to allow you to distribute
+     28              >>! a combined work that includes FreeRTOS without being obliged to provide
+     29              >>! the source code for proprietary components outside of the FreeRTOS
+     30              >>! kernel.
+     31          
+     32              FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
+     33              WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     34              FOR A PARTICULAR PURPOSE.  Full license text is available from the following
+     35              link: http://www.freertos.org/a00114.html
+     36          
+     37              1 tab == 4 spaces!
+     38          
+     39              ***************************************************************************
+     40               *                                                                       *
+     41               *    Having a problem?  Start by reading the FAQ "My application does   *
+     42               *    not run, what could be wrong?"                                     *
+     43               *                                                                       *
+     44               *    http://www.FreeRTOS.org/FAQHelp.html                               *
+     45               *                                                                       *
+     46              ***************************************************************************
+     47          
+     48              http://www.FreeRTOS.org - Documentation, books, training, latest versions,
+     49              license and Real Time Engineers Ltd. contact details.
+     50          
+     51              http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
+     52              including FreeRTOS+Trace - an indispensable productivity tool, a DOS
+     53              compatible FAT file system, and our tiny thread aware UDP/IP stack.
+     54          
+     55              http://www.OpenRTOS.com - Real Time Engineers ltd license FreeRTOS to High
+     56              Integrity Systems to sell under the OpenRTOS brand.  Low cost OpenRTOS
+     57              licenses offer ticketed support, indemnification and middleware.
+     58          
+     59              http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+     60              engineered and independently SIL3 certified version for use in safety and
+     61              mission critical applications that require provable dependability.
+     62          
+     63              1 tab == 4 spaces!
+     64          */
+     65          
+     66          /* High speed timer test as described in main.c. */
+     67          
+     68          /* Scheduler includes. */
+     69          #include "FreeRTOS.h"
+     70          
+     71          /* Library includes. */
+     72          //#include "stm32f10x_lib.h"
+     73          #include "stm32f10x_tim.h"
+     74          //#include "stm32f10x_map.h"
+     75          
+     76          /* The set frequency of the interrupt.  Deviations from this are measured as
+     77          the jitter. */
+     78          #define timerINTERRUPT_FREQUENCY		( ( unsigned portSHORT ) 20000 )
+     79          
+     80          /* The expected time between each of the timer interrupts - if the jitter was
+     81          zero. */
+     82          #define timerEXPECTED_DIFFERENCE_VALUE	( configCPU_CLOCK_HZ / timerINTERRUPT_FREQUENCY )
+     83          
+     84          /* The highest available interrupt priority. */
+     85          #define timerHIGHEST_PRIORITY			( 0 )
+     86          
+     87          /* Misc defines. */
+     88          #define timerMAX_32BIT_VALUE			( 0xffffffffUL )
+     89          #define timerTIMER_1_COUNT_VALUE		( * ( ( unsigned long * ) ( TIMER1_BASE + 0x48 ) ) )
+     90          
+     91          /* The number of interrupts to pass before we start looking at the jitter. */
+     92          #define timerSETTLE_TIME			5
+     93          
+     94          /*-----------------------------------------------------------*/
+     95          
+     96          /*
+     97           * Configures the two timers used to perform the test.
+     98           */
+     99          void vSetupTimerTest( void );
+    100          
+    101          /* Interrupt handler in which the jitter is measured. */
+    102          void vTimer2IntHandler( void );
+    103          
+    104          /* Stores the value of the maximum recorded jitter between interrupts. */
+    105          volatile unsigned portSHORT usMaxJitter = 0;
+    106          
+    107          /*-----------------------------------------------------------*/
+    108          
+    109          void vSetupTimerTest( void )
+    110          {
+    111          unsigned long ulFrequency;
+    112          TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+    113          NVIC_InitTypeDef NVIC_InitStructure;
+    114          
+    115          
+    116          	/* Enable timer clocks */
+    117          	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM2, ENABLE );
+    118          	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM3, ENABLE );
+    119          
+    120          	/* Initialise data. */
+    121          	TIM_DeInit( TIM2 );
+    122          	TIM_DeInit( TIM3 );
+    123          	TIM_TimeBaseStructInit( &TIM_TimeBaseStructure );
+    124          
+    125          	/* Time base configuration for timer 2 - which generates the interrupts. */
+    126          	ulFrequency = configCPU_CLOCK_HZ / timerINTERRUPT_FREQUENCY;	
+    127          	TIM_TimeBaseStructure.TIM_Period = ( unsigned portSHORT ) ( ulFrequency & 0xffffUL );
+    128          	TIM_TimeBaseStructure.TIM_Prescaler = 0x0;
+    129          	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
+    130          	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    131          	TIM_TimeBaseInit( TIM2, &TIM_TimeBaseStructure );
+    132          	TIM_ARRPreloadConfig( TIM2, ENABLE );
+    133          
+    134          	
+    135          	/* Configuration for timer 3 which is used as a high resolution time
+    136          	measurement. */
+    137          	TIM_TimeBaseStructure.TIM_Period = ( unsigned portSHORT ) 0xffff;
+    138          	TIM_TimeBaseInit( TIM3, &TIM_TimeBaseStructure );
+    139          	TIM_ARRPreloadConfig( TIM3, ENABLE );
+    140          	
+    141          	/* Enable TIM2 IT.  TIM3 does not generate an interrupt. */
+    142          	NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+    143          	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    144          	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = timerHIGHEST_PRIORITY;
+    145          	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    146          	NVIC_Init( &NVIC_InitStructure );	
+    147          	TIM_ITConfig( TIM2, TIM_IT_Update, ENABLE );
+    148          
+    149          	/* Finally, enable both timers. */
+    150          	TIM_Cmd( TIM2, ENABLE );
+    151          	TIM_Cmd( TIM3, ENABLE );
+    152          }
+    153          /*-----------------------------------------------------------*/
+    154          
+    155          void vTimer2IntHandler( void )
+    156          {
+    157          static unsigned portSHORT usLastCount = 0, usSettleCount = 0, usMaxDifference = 0;
+    158          unsigned portSHORT usThisCount, usDifference;
+    159          
+    160          	/* Capture the free running timer 3 value as we enter the interrupt. */
+    161          	usThisCount = TIM3->CNT;
+    162          	
+    163          	if( usSettleCount >= timerSETTLE_TIME )
+    164          	{
+    165          		/* What is the difference between the timer value in this interrupt
+    166          		and the value from the last interrupt. */
+    167          		usDifference = usThisCount - usLastCount;
+    168          
+    169          		/* Store the difference in the timer values if it is larger than the
+    170          		currently stored largest value.  The difference over and above the
+    171          		expected difference will give the 'jitter' in the processing of these
+    172          		interrupts. */
+    173          		if( usDifference > usMaxDifference )
+    174          		{
+    175          			usMaxDifference = usDifference;
+    176          			usMaxJitter = usMaxDifference - timerEXPECTED_DIFFERENCE_VALUE;
+    177          		}
+    178          	}
+    179          	else
+    180          	{
+    181          		/* Don't bother storing any values for the first couple of
+    182          		interrupts. */
+    183          		usSettleCount++;
+    184          	}
+    185          
+    186          	/* Remember what the timer value was this time through, so we can calculate
+    187          	the difference the next time through. */
+    188          	usLastCount = usThisCount;
+    189          
+    190              TIM_ClearITPendingBit( TIM2, TIM_IT_Update );
+    191          }
+    192          
+    193          
+    194          
+    195          
+    196          
+    197          
+    198          
+    199          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       24  vSetupTimerTest
+             24 -> NVIC_Init
+             24 -> RCC_APB1PeriphClockCmd
+             24 -> TIM_ARRPreloadConfig
+             24 -> TIM_Cmd
+             24 -> TIM_DeInit
+             24 -> TIM_ITConfig
+             24 -> TIM_TimeBaseInit
+             24 -> TIM_TimeBaseStructInit
+        8  vTimer2IntHandler
+              8 -> TIM_ClearITPendingBit
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable1
+       4  ??DataTable1_1
+       4  ??DataTable1_2
+       4  ??DataTable1_3
+       4  ??DataTable1_4
+       4  ??DataTable1_5
+       2  usLastCount
+       2  usMaxDifference
+       2  usMaxJitter
+       2  usSettleCount
+     174  vSetupTimerTest
+      74  vTimer2IntHandler
+
+ 
+   8 bytes in section .bss
+ 272 bytes in section .text
+ 
+ 272 bytes of CODE memory
+   8 bytes of DATA memory
+
+Errors: none
+Warnings: none

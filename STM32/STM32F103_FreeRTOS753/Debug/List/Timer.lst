@@ -1,0 +1,126 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     14/Nov/2013  13:34:13 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\pragram\STM32F103_FreeRTOS\Timer.c                    #
+#    Command line =  D:\pragram\STM32F103_FreeRTOS\Timer.c -D IAR_ARM_CM3     #
+#                    -lcN D:\pragram\STM32F103_FreeRTOS\Debug\List\           #
+#                    --diag_suppress Pa082,pe191 -o                           #
+#                    D:\pragram\STM32F103_FreeRTOS\Debug\Obj\ --no_cse        #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_clustering --no_scheduling --debug --endian=little  #
+#                    --cpu=Cortex-M3 -e --fpu=None --dlib_config "D:\Program  #
+#                    Files\IAR Systems\Embedded Workbench                     #
+#                    6.4\arm\INC\c\DLib_Config_Full.h" -I                     #
+#                    D:\pragram\STM32F103_FreeRTOS\.\ -I                      #
+#                    D:\pragram\STM32F103_FreeRTOS\STM32F10x_StdPeriph_Lib_V3 #
+#                    .5.0\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I        #
+#                    D:\pragram\STM32F103_FreeRTOS\Source\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\Common\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\CMSIS\ -I                  #
+#                    D:\pragram\STM32F103_FreeRTOS\user_task\ -I              #
+#                    D:\pragram\STM32F103_FreeRTOS\test_task\ -Ol             #
+#                    --use_c++_inline                                         #
+#    List file    =  D:\pragram\STM32F103_FreeRTOS\Debug\List\Timer.lst       #
+#    Object file  =  D:\pragram\STM32F103_FreeRTOS\Debug\Obj\Timer.o          #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\pragram\STM32F103_FreeRTOS\Timer.c
+      1          
+      2          #include "Timer.h"
+      3          #include "string.h"
+      4          //#include "Macros.h"
+      5          //#include "Serial.h"
+      6          //#include "Head.h"
+      7          //#include "Paper_Temp_CHK.h"
+      8          
+      9          //#include "stm32f10x_adc.h"
+     10          #include "stm32f10x_gpio.h"
+     11          
+     12          
+     13          sSysTick_TypeDef sSysTick;
+     14          
+     15          //***************************************************************************
+     16          // - function: System Tick Init
+     17          // - function module: FTP-628MCL101 Thermal Printer Module Motor Operation
+     18          // - function call: call only by boot user or app user 
+     19          // - input£ºspecified step
+     20          // - return:none
+     21          // - comment£ºthe pwm generating will be refined in its interrupt servicing program
+     22          // - author:Mianbo Huang 2012/09
+     23          //***************************************************************************
+     24          
+     25          void pr_SysTick_Init(void)
+     26          {
+     27            memset(&sSysTick,0,sizeof(sSysTick_TypeDef));
+     28          
+     29            while(SysTick_Config(72000000 / 1000));
+     30          
+     31          }
+     32          //***************************************************************************
+     33          // - function: System Tick Init
+     34          // - function module: FTP-628MCL101 Thermal Printer Module Motor Operation
+     35          // - function call: call only by boot user or app user 
+     36          // - input£ºspecified step
+     37          // - return:none
+     38          // - comment£ºthe pwm generating will be refined in its interrupt servicing program
+     39          // - cost time 3.5us
+     40          // - author:Mianbo Huang 2012/09
+     41          //***************************************************************************
+     42          void pr_SysTick_Isr(void)
+     43          {
+     44              sSysTick.mSysTickle++;
+     45              if(sSysTick.mSysTickle%500 == 0)
+     46              {
+     47                  sSysTick.m500msFlag = 1;
+     48              }
+     49          
+     50          }
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        0  NVIC_SetPriority
+        8  SysTick_Config
+             8 -> NVIC_SetPriority
+        8  memset
+             8 -> __aeabi_memset
+        8  pr_SysTick_Init
+             8 -> SysTick_Config
+             8 -> memset
+        0  pr_SysTick_Isr
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable3
+       4  ??DataTable3_1
+       4  ??DataTable3_2
+       4  ??DataTable3_3
+       4  ??DataTable3_4
+       4  ??DataTable3_5
+       4  ??DataTable3_6
+      34  NVIC_SetPriority
+      48  SysTick_Config
+      20  memset
+      24  pr_SysTick_Init
+      38  pr_SysTick_Isr
+       8  sSysTick
+
+ 
+   8 bytes in section .bss
+ 192 bytes in section .text
+ 
+ 172 bytes of CODE memory (+ 20 bytes shared)
+   8 bytes of DATA memory
+
+Errors: none
+Warnings: none

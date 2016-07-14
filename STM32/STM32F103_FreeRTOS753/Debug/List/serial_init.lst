@@ -1,0 +1,392 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     17/Dec/2013  09:01:06 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\pragram\STM32F103_FreeRTOS\user_task\serial_init.c    #
+#    Command line =  D:\pragram\STM32F103_FreeRTOS\user_task\serial_init.c    #
+#                    -D IAR_ARM_CM3 -lcN D:\pragram\STM32F103_FreeRTOS\Debug\ #
+#                    List\ --diag_suppress Pa082,pe191 -o                     #
+#                    D:\pragram\STM32F103_FreeRTOS\Debug\Obj\ --no_cse        #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_clustering --no_scheduling --debug --endian=little  #
+#                    --cpu=Cortex-M3 -e --fpu=None --dlib_config "D:\Program  #
+#                    Files\IAR Systems\Embedded Workbench                     #
+#                    6.4\arm\INC\c\DLib_Config_Full.h" -I                     #
+#                    D:\pragram\STM32F103_FreeRTOS\.\ -I                      #
+#                    D:\pragram\STM32F103_FreeRTOS\STM32F10x_StdPeriph_Lib_V3 #
+#                    .5.0\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I        #
+#                    D:\pragram\STM32F103_FreeRTOS\Source\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\Common\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\CMSIS\ -I                  #
+#                    D:\pragram\STM32F103_FreeRTOS\user_task\ -I              #
+#                    D:\pragram\STM32F103_FreeRTOS\test_task\ -Ol             #
+#                    --use_c++_inline                                         #
+#    List file    =  D:\pragram\STM32F103_FreeRTOS\Debug\List\serial_init.lst #
+#    Object file  =  D:\pragram\STM32F103_FreeRTOS\Debug\Obj\serial_init.o    #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\pragram\STM32F103_FreeRTOS\user_task\serial_init.c
+      1          
+      2          #include "serial_init.h"
+      3          #include "macros.h"
+      4          #include <string.h>
+      5          #include "semphr.h"
+      6          
+      7          TSerial_TypeDef g_Serial;
+      8          u8 RecvBuffer[USART1_RECV_BUF_SIZE];
+      9          u8 SendBuffer[USART1_SEND_BUF_SIZE];
+     10          
+     11          xQueueHandle xSeriaTxQueue;
+     12          xSemaphoreHandle xSemaphore_serial_mutex;
+     13          
+     14          //***************************************************************************
+     15          // - function: STM32'S USART1 Inits;
+     16          // - function module:USART Control Operation
+     17          // - input£ºnone
+     18          // - return:none
+     19          // - comment£º
+     20          //***************************************************************************
+     21          void APP_Serial_Init(void)
+     22          {
+     23            //----------------- Init RCC FOR GPIOA and USART 1------------------//
+     24            RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE); 
+     25            RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+     26            RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+     27            GPIO_PinRemapConfig(GPIO_Remap1_CAN1,ENABLE);
+     28            //----------------- Init GPIO For USART ------------------//
+     29            GPIO_InitTypeDef GPIO_InitStructure;
+     30            //Init TX RTS Pin of USART1 as AF floating
+     31          
+     32            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_Tx;
+     33            GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+     34            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+     35            GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+     36             //Init RX CTS Pin of USART1 as input floating
+     37            //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_CTS | GPIO_Pin_Rx;
+     38            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_Rx;
+     39            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+     40            GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+     41          
+     42            GPIO_InitStructure.GPIO_Pin = GPIO_Pin_RTS;
+     43            GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+     44            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+     45            GPIO_Init(GPIO_USART, &GPIO_InitStructure);
+     46          
+     47            //--------------------- Init USART1 ---------------------//
+     48            USART_InitTypeDef USART_InitStructure;
+     49            USART_InitStructure.USART_BaudRate = PR_BAUDRATE;
+     50            USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+     51            USART_InitStructure.USART_StopBits = USART_StopBits_1;
+     52            USART_InitStructure.USART_Parity = USART_Parity_No ;
+     53          
+     54            USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+     55          
+     56            USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+     57            // Configure USART1
+     58            USART_Init(USART1, &USART_InitStructure);
+     59            // Enable the USART1
+     60            USART_Cmd(USART1, ENABLE);
+     61            
+     62            //--------------------- Init USART1 IT ---------------------//
+     63            // Enable USART1 IT
+     64            NVIC_InitTypeDef NVIC_InitStructure;
+     65            NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+     66            NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = PR_USART_IRQ_PRIORITY;
+     67            NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+     68            NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+     69            NVIC_Init(&NVIC_InitStructure);
+     70            
+     71            Disable_Usart1_TxIt();
+     72            Enable_Usart1_RxIt();
+     73            
+     74            memset(&g_Serial,0,sizeof(TSerial_TypeDef));
+     75            
+     76            g_Serial.mRecvBuffer=(u8*)RecvBuffer;
+     77            g_Serial.mSendBuffer=(u8*)SendBuffer;
+     78          
+     79            g_Serial.mRecvWritePt=(u8*)RecvBuffer;
+     80            g_Serial.mRecvReadPt=(u8*)RecvBuffer;
+     81            g_Serial.mSendWritePt=(u8*)SendBuffer;
+     82            g_Serial.mSendReadPt=(u8*)SendBuffer;
+     83          
+     84            g_Serial.mRecvNum=0;
+     85            g_Serial.mSendNum=0;
+     86          
+     87            memset(g_Serial.mRecvBuffer,0,USART1_RECV_BUF_SIZE);
+     88            memset(g_Serial.mSendBuffer,0,USART1_SEND_BUF_SIZE);
+     89            
+     90          }
+     91          
+     92          
+     93          //***************************************************************************
+     94          // - function: USART Tx Interrupt Enable;
+     95          // - function module:USART Control Operation
+     96          // - input£ºnone
+     97          // - return:none
+     98          // - comment£º
+     99          //***************************************************************************
+    100          void Enable_Usart1_TxIt(void)
+    101          {
+    102           USART_ITConfig(USART1, USART_IT_TXE, ENABLE); 
+    103          }
+    104          //***************************************************************************
+    105          // - function: USART Rx Interrupt Enable;
+    106          // - function module:USART Control Operation
+    107          // - input£ºnone
+    108          // - return:none
+    109          // - comment£º
+    110          //***************************************************************************
+    111          void Enable_Usart1_RxIt(void)
+    112          {
+    113            USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    114          }
+    115          //***************************************************************************
+    116          // - function: USART Tx Interrupt Disable;
+    117          // - function module:USART Control Operation
+    118          // - input£ºnone
+    119          // - return:none
+    120          // - comment£º
+    121          //***************************************************************************
+    122          void Disable_Usart1_TxIt(void)
+    123          {
+    124            USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
+    125          }
+    126          //***************************************************************************
+    127          // - function: USART Rx Interrupt Disable;
+    128          // - function module:USART Control Operation
+    129          // - input£ºnone
+    130          // - return:none
+    131          // - comment£º
+    132          //***************************************************************************
+    133          void Disable_Usart1_RxIt(void)
+    134          {
+    135            USART_ITConfig(USART1, USART_IT_RXNE, DISABLE);
+    136          }
+    137          
+    138          //***************************************************************************
+    139          // - function: Write(Send) Numbers of Data into USART send buffer;
+    140          // - function module:USART Control Operation
+    141          // - input£ºarray of data and number of data to be sent 
+    142          // - return:number of data sent
+    143          //***************************************************************************
+    144          u32 APP_Serial_TxBuffer_Write(u8* buffer,u32 send_num)
+    145          {
+    146            u32 i;
+    147             
+    148            if((USART1_SEND_BUF_SIZE-g_Serial.mSendNum)<send_num)return 0;
+    149            
+    150            for( i=0;i<send_num;i++)
+    151            {
+    152               *g_Serial.mSendWritePt++=*buffer++;
+    153               __disable_irq();
+    154               g_Serial.mSendNum++;
+    155               __enable_irq();
+    156               
+    157               if(g_Serial.mSendWritePt>=(SendBuffer+USART1_SEND_BUF_SIZE))
+    158                g_Serial.mSendWritePt=SendBuffer;  
+    159            }
+    160            
+    161            return i;  
+    162          }
+    163          
+    164          //***************************************************************************
+    165          // - function:  USART Interrupt Servicing Program;
+    166          // - function module:USART Control Operation
+    167          // - input£ºnone
+    168          // - return:none
+    169          // - comment£ºmust no send a bytes less than 2.5ms
+    170          //***************************************************************************
+    171          void APP_USART1_ISR(void)
+    172          {
+    173            // receive;
+    174          #ifdef serial_queue_test  
+    175            u8 data;
+    176          #endif 
+    177            if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) 
+    178            {
+    179          #ifdef serial_queue_test        
+    180                  data = USART_ReceiveData(USART1);
+    181                  if(xQueueSendFromISR(  xSeriaTxQueue, &data, NULL ))//add to queue
+    182                  { }
+    183                  else
+    184                  { }
+    185                  if(xQueueIsQueueFullFromISR ( xSeriaTxQueue ))
+    186                  {
+    187                      PR_SERIAL_RTS_HIGH();
+    188                      Enable_Usart1_TxIt();
+    189                  }
+    190          #endif        
+    191                  *(g_Serial.mRecvWritePt)=USART_ReceiveData(USART1);
+    192                  
+    193                  g_Serial.mRecvWritePt++;
+    194                  if(g_Serial.mRecvWritePt>=(RecvBuffer+USART1_RECV_BUF_SIZE))
+    195                  {
+    196                     g_Serial.mRecvWritePt=RecvBuffer;
+    197                  }
+    198                  g_Serial.mRecvNum++; // Read one byte from the receive data register 
+    199                 
+    200                  if(g_Serial.mRecvNum >= USART1_RECV_BUF_SIZE - 50)
+    201                  {
+    202                      PR_SERIAL_RTS_HIGH();
+    203                  }
+    204                  
+    205                  USART_ClearITPendingBit(USART1,USART_IT_RXNE); 
+    206            }
+    207            // send;
+    208            else if(USART_GetITStatus(USART1, USART_IT_TXE) != RESET) 
+    209            {
+    210              
+    211          #ifdef serial_queue_test     
+    212              if(xQueueIsQueueEmptyFromISR( xSeriaTxQueue ))
+    213          #else
+    214              if(g_Serial.mSendNum == 0)
+    215          #endif
+    216              {//send buf is empty;
+    217                  //USART_ITConfig(USART1, USART_IT_TXE, DISABLE); 
+    218                  Disable_Usart1_TxIt();
+    219              }
+    220              else 
+    221              {   
+    222          #ifdef serial_queue_test         
+    223                if(xQueueReceiveFromISR( xSeriaTxQueue, &data, NULL ))
+    224                  {
+    225                      USART_SendData(USART1, data);
+    226                  }
+    227                  else
+    228                  {}
+    229          #endif
+    230                  USART_SendData(USART1, *g_Serial.mSendReadPt);
+    231                  g_Serial.mSendNum --;
+    232                  g_Serial.mSendReadPt++;
+    233                  if(g_Serial.mSendReadPt>=(SendBuffer+USART1_SEND_BUF_SIZE))
+    234                    g_Serial.mSendReadPt=SendBuffer;
+    235              }//end of elses
+    236              
+    237              USART_ClearITPendingBit(USART1,USART_IT_TXE);
+    238            }//end of else if 
+    239            
+    240          }
+    241          
+    242          
+    243          
+    244          
+    245          
+    246          
+    247          
+    248          
+    249          
+    250          
+    251          
+    252          
+    253          
+    254          
+    255          
+    256          
+    257          
+    258          
+    259          
+    260          
+    261          
+    262          
+    263          
+    264          
+    265          
+    266          
+    267          
+    268          
+    269          
+    270          
+    271          
+    272          
+    273          
+    274          
+    275          
+    276          
+    277          
+    278          
+    279          
+    280          
+    281          
+    282          
+    283          
+    284          
+    285          
+    286          
+    287          
+    288          
+    289          
+    290          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       32  APP_Serial_Init
+             32 -> Disable_Usart1_TxIt
+             32 -> Enable_Usart1_RxIt
+             32 -> GPIO_Init
+             32 -> GPIO_PinRemapConfig
+             32 -> NVIC_Init
+             32 -> RCC_APB2PeriphClockCmd
+             32 -> USART_Cmd
+             32 -> USART_Init
+             32 -> memset
+        4  APP_Serial_TxBuffer_Write
+        8  APP_USART1_ISR
+              8 -> Disable_Usart1_TxIt
+              8 -> GPIO_SetBits
+              8 -> USART_ClearITPendingBit
+              8 -> USART_GetITStatus
+              8 -> USART_ReceiveData
+              8 -> USART_SendData
+        8  Disable_Usart1_RxIt
+              8 -> USART_ITConfig
+        8  Disable_Usart1_TxIt
+              8 -> USART_ITConfig
+        8  Enable_Usart1_RxIt
+              8 -> USART_ITConfig
+        8  Enable_Usart1_TxIt
+              8 -> USART_ITConfig
+        8  memset
+              8 -> __aeabi_memset
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable6
+       4  ??DataTable6_1
+       4  ??DataTable6_2
+       4  ??DataTable6_3
+       4  ??DataTable6_4
+       4  ??DataTable6_5
+       4  ??DataTable6_6
+     298  APP_Serial_Init
+      84  APP_Serial_TxBuffer_Write
+     188  APP_USART1_ISR
+      16  Disable_Usart1_RxIt
+      16  Disable_Usart1_TxIt
+      16  Enable_Usart1_RxIt
+      16  Enable_Usart1_TxIt
+    2048  RecvBuffer
+     512  SendBuffer
+      32  g_Serial
+      20  memset
+       4  xSemaphore_serial_mutex
+       4  xSeriaTxQueue
+
+ 
+ 2 600 bytes in section .bss
+   682 bytes in section .text
+ 
+   662 bytes of CODE memory (+ 20 bytes shared)
+ 2 600 bytes of DATA memory
+
+Errors: none
+Warnings: none

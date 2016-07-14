@@ -1,0 +1,383 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     22/Nov/2013  11:50:47 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\pragram\STM32F103_FreeRTOS\Common\heap_2.c            #
+#    Command line =  D:\pragram\STM32F103_FreeRTOS\Common\heap_2.c -D         #
+#                    IAR_ARM_CM3 -lcN D:\pragram\STM32F103_FreeRTOS\Debug\Lis #
+#                    t\ --diag_suppress Pa082,pe191 -o                        #
+#                    D:\pragram\STM32F103_FreeRTOS\Debug\Obj\ --no_cse        #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_clustering --no_scheduling --debug --endian=little  #
+#                    --cpu=Cortex-M3 -e --fpu=None --dlib_config "D:\Program  #
+#                    Files\IAR Systems\Embedded Workbench                     #
+#                    6.4\arm\INC\c\DLib_Config_Full.h" -I                     #
+#                    D:\pragram\STM32F103_FreeRTOS\.\ -I                      #
+#                    D:\pragram\STM32F103_FreeRTOS\STM32F10x_StdPeriph_Lib_V3 #
+#                    .5.0\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I        #
+#                    D:\pragram\STM32F103_FreeRTOS\Source\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\Common\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\CMSIS\ -I                  #
+#                    D:\pragram\STM32F103_FreeRTOS\user_task\ -I              #
+#                    D:\pragram\STM32F103_FreeRTOS\test_task\ -Ol             #
+#                    --use_c++_inline                                         #
+#    List file    =  D:\pragram\STM32F103_FreeRTOS\Debug\List\heap_2.lst      #
+#    Object file  =  D:\pragram\STM32F103_FreeRTOS\Debug\Obj\heap_2.o         #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\pragram\STM32F103_FreeRTOS\Common\heap_2.c
+      1          /*
+      2              FreeRTOS V7.5.3 - Copyright (C) 2013 Real Time Engineers Ltd. 
+      3              All rights reserved
+      4          
+      5              VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
+      6          
+      7              ***************************************************************************
+      8               *                                                                       *
+      9               *    FreeRTOS provides completely free yet professionally developed,    *
+     10               *    robust, strictly quality controlled, supported, and cross          *
+     11               *    platform software that has become a de facto standard.             *
+     12               *                                                                       *
+     13               *    Help yourself get started quickly and support the FreeRTOS         *
+     14               *    project by purchasing a FreeRTOS tutorial book, reference          *
+     15               *    manual, or both from: http://www.FreeRTOS.org/Documentation        *
+     16               *                                                                       *
+     17               *    Thank you!                                                         *
+     18               *                                                                       *
+     19              ***************************************************************************
+     20          
+     21              This file is part of the FreeRTOS distribution.
+     22          
+     23              FreeRTOS is free software; you can redistribute it and/or modify it under
+     24              the terms of the GNU General Public License (version 2) as published by the
+     25              Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+     26          
+     27              >>! NOTE: The modification to the GPL is included to allow you to distribute
+     28              >>! a combined work that includes FreeRTOS without being obliged to provide
+     29              >>! the source code for proprietary components outside of the FreeRTOS
+     30              >>! kernel.
+     31          
+     32              FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
+     33              WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     34              FOR A PARTICULAR PURPOSE.  Full license text is available from the following
+     35              link: http://www.freertos.org/a00114.html
+     36          
+     37              1 tab == 4 spaces!
+     38          
+     39              ***************************************************************************
+     40               *                                                                       *
+     41               *    Having a problem?  Start by reading the FAQ "My application does   *
+     42               *    not run, what could be wrong?"                                     *
+     43               *                                                                       *
+     44               *    http://www.FreeRTOS.org/FAQHelp.html                               *
+     45               *                                                                       *
+     46              ***************************************************************************
+     47          
+     48              http://www.FreeRTOS.org - Documentation, books, training, latest versions,
+     49              license and Real Time Engineers Ltd. contact details.
+     50          
+     51              http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
+     52              including FreeRTOS+Trace - an indispensable productivity tool, a DOS
+     53              compatible FAT file system, and our tiny thread aware UDP/IP stack.
+     54          
+     55              http://www.OpenRTOS.com - Real Time Engineers ltd license FreeRTOS to High
+     56              Integrity Systems to sell under the OpenRTOS brand.  Low cost OpenRTOS
+     57              licenses offer ticketed support, indemnification and middleware.
+     58          
+     59              http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+     60              engineered and independently SIL3 certified version for use in safety and
+     61              mission critical applications that require provable dependability.
+     62          
+     63              1 tab == 4 spaces!
+     64          */
+     65          
+     66          /*
+     67           * A sample implementation of pvPortMalloc() and vPortFree() that permits
+     68           * allocated blocks to be freed, but does not combine adjacent free blocks
+     69           * into a single larger block (and so will fragment memory).  See heap_4.c for
+     70           * an equivalent that does combine adjacent blocks into single larger blocks.
+     71           *
+     72           * See heap_1.c, heap_3.c and heap_4.c for alternative implementations, and the
+     73           * memory management pages of http://www.FreeRTOS.org for more information.
+     74           */
+     75          #include <stdlib.h>
+     76          
+     77          /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
+     78          all the API functions to use the MPU wrappers.  That should only be done when
+     79          task.h is included from an application file. */
+     80          #define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
+     81          
+     82          #include "FreeRTOS.h"
+     83          #include "task.h"
+     84          
+     85          #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
+     86          
+     87          /* A few bytes might be lost to byte aligning the heap start address. */
+     88          #define configADJUSTED_HEAP_SIZE	( configTOTAL_HEAP_SIZE - portBYTE_ALIGNMENT )
+     89          
+     90          /* 
+     91           * Initialises the heap structures before their first use.
+     92           */
+     93          static void prvHeapInit( void );
+     94          
+     95          /* Allocate the memory for the heap. */
+     96          static unsigned char ucHeap[ configTOTAL_HEAP_SIZE ];
+     97          
+     98          /* Define the linked list structure.  This is used to link free blocks in order
+     99          of their size. */
+    100          typedef struct A_BLOCK_LINK
+    101          {
+    102          	struct A_BLOCK_LINK *pxNextFreeBlock;	/*<< The next free block in the list. */
+    103          	size_t xBlockSize;						/*<< The size of the free block. */
+    104          } xBlockLink;
+    105          
+    106          
+    107          static const unsigned short heapSTRUCT_SIZE	= ( ( sizeof ( xBlockLink ) + ( portBYTE_ALIGNMENT - 1 ) ) & ~portBYTE_ALIGNMENT_MASK );
+    108          #define heapMINIMUM_BLOCK_SIZE	( ( size_t ) ( heapSTRUCT_SIZE * 2 ) )
+    109          
+    110          /* Create a couple of list links to mark the start and end of the list. */
+    111          static xBlockLink xStart, xEnd;
+    112          
+    113          /* Keeps track of the number of free bytes remaining, but says nothing about
+    114          fragmentation. */
+    115          static size_t xFreeBytesRemaining = configADJUSTED_HEAP_SIZE;
+    116          
+    117          /* STATIC FUNCTIONS ARE DEFINED AS MACROS TO MINIMIZE THE FUNCTION CALL DEPTH. */
+    118          
+    119          /*
+    120           * Insert a block into the list of free blocks - which is ordered by size of
+    121           * the block.  Small blocks at the start of the list and large blocks at the end
+    122           * of the list.
+    123           */
+    124          #define prvInsertBlockIntoFreeList( pxBlockToInsert )								\
+    125          {																					\
+    126          xBlockLink *pxIterator;																\
+    127          size_t xBlockSize;																	\
+    128          																					\
+    129          	xBlockSize = pxBlockToInsert->xBlockSize;										\
+    130          																					\
+    131          	/* Iterate through the list until a block is found that has a larger size */	\
+    132          	/* than the block we are inserting. */											\
+    133          	for( pxIterator = &xStart; pxIterator->pxNextFreeBlock->xBlockSize < xBlockSize; pxIterator = pxIterator->pxNextFreeBlock )	\
+    134          	{																				\
+    135          		/* There is nothing to do here - just iterate to the correct position. */	\
+    136          	}																				\
+    137          																					\
+    138          	/* Update the list to include the block being inserted in the correct */		\
+    139          	/* position. */																	\
+    140          	pxBlockToInsert->pxNextFreeBlock = pxIterator->pxNextFreeBlock;					\
+    141          	pxIterator->pxNextFreeBlock = pxBlockToInsert;									\
+    142          }
+    143          /*-----------------------------------------------------------*/
+    144          
+    145          void *pvPortMalloc( size_t xWantedSize )
+    146          {
+    147          xBlockLink *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
+    148          static portBASE_TYPE xHeapHasBeenInitialised = pdFALSE;
+    149          void *pvReturn = NULL;
+    150          
+    151          	vTaskSuspendAll();
+    152          	{
+    153          		/* If this is the first call to malloc then the heap will require
+    154          		initialisation to setup the list of free blocks. */
+    155          		if( xHeapHasBeenInitialised == pdFALSE )
+    156          		{
+    157          			prvHeapInit();
+    158          			xHeapHasBeenInitialised = pdTRUE;
+    159          		}
+    160          
+    161          		/* The wanted size is increased so it can contain a xBlockLink
+    162          		structure in addition to the requested amount of bytes. */
+    163          		if( xWantedSize > 0 )
+    164          		{
+    165          			xWantedSize += heapSTRUCT_SIZE;
+    166          
+    167          			/* Ensure that blocks are always aligned to the required number of bytes. */
+    168          			if( ( xWantedSize & portBYTE_ALIGNMENT_MASK ) != 0 )
+    169          			{
+    170          				/* Byte alignment required. */
+    171          				xWantedSize += ( portBYTE_ALIGNMENT - ( xWantedSize & portBYTE_ALIGNMENT_MASK ) );
+    172          			}
+    173          		}
+    174          
+    175          		if( ( xWantedSize > 0 ) && ( xWantedSize < configADJUSTED_HEAP_SIZE ) )
+    176          		{
+    177          			/* Blocks are stored in byte order - traverse the list from the start
+    178          			(smallest) block until one of adequate size is found. */
+    179          			pxPreviousBlock = &xStart;
+    180          			pxBlock = xStart.pxNextFreeBlock;
+    181          			while( ( pxBlock->xBlockSize < xWantedSize ) && ( pxBlock->pxNextFreeBlock != NULL ) )
+    182          			{
+    183          				pxPreviousBlock = pxBlock;
+    184          				pxBlock = pxBlock->pxNextFreeBlock;
+    185          			}
+    186          
+    187          			/* If we found the end marker then a block of adequate size was not found. */
+    188          			if( pxBlock != &xEnd )
+    189          			{
+    190          				/* Return the memory space - jumping over the xBlockLink structure
+    191          				at its start. */
+    192          				pvReturn = ( void * ) ( ( ( unsigned char * ) pxPreviousBlock->pxNextFreeBlock ) + heapSTRUCT_SIZE );
+    193          
+    194          				/* This block is being returned for use so must be taken out of the
+    195          				list of free blocks. */
+    196          				pxPreviousBlock->pxNextFreeBlock = pxBlock->pxNextFreeBlock;
+    197          
+    198          				/* If the block is larger than required it can be split into two. */
+    199          				if( ( pxBlock->xBlockSize - xWantedSize ) > heapMINIMUM_BLOCK_SIZE )
+    200          				{
+    201          					/* This block is to be split into two.  Create a new block
+    202          					following the number of bytes requested. The void cast is
+    203          					used to prevent byte alignment warnings from the compiler. */
+    204          					pxNewBlockLink = ( void * ) ( ( ( unsigned char * ) pxBlock ) + xWantedSize );
+    205          
+    206          					/* Calculate the sizes of two blocks split from the single
+    207          					block. */
+    208          					pxNewBlockLink->xBlockSize = pxBlock->xBlockSize - xWantedSize;
+    209          					pxBlock->xBlockSize = xWantedSize;
+    210          
+    211          					/* Insert the new block into the list of free blocks. */
+    212          					prvInsertBlockIntoFreeList( ( pxNewBlockLink ) );
+    213          				}
+    214          
+    215          				xFreeBytesRemaining -= pxBlock->xBlockSize;
+    216          			}
+    217          		}
+    218          		
+    219          		traceMALLOC( pvReturn, xWantedSize );
+    220          	}
+    221          	xTaskResumeAll();
+    222          
+    223          	#if( configUSE_MALLOC_FAILED_HOOK == 1 )
+    224          	{
+    225          		if( pvReturn == NULL )
+    226          		{
+    227          			extern void vApplicationMallocFailedHook( void );
+    228          			vApplicationMallocFailedHook();
+    229          		}
+    230          	}
+    231          	#endif
+    232          
+    233          	return pvReturn;
+    234          }
+    235          /*-----------------------------------------------------------*/
+    236          
+    237          void vPortFree( void *pv )
+    238          {
+    239          unsigned char *puc = ( unsigned char * ) pv;
+    240          xBlockLink *pxLink;
+    241          
+    242          	if( pv != NULL )
+    243          	{
+    244          		/* The memory being freed will have an xBlockLink structure immediately
+    245          		before it. */
+    246          		puc -= heapSTRUCT_SIZE;
+    247          
+    248          		/* This unexpected casting is to keep some compilers from issuing 
+    249          		byte alignment warnings. */
+    250          		pxLink = ( void * ) puc;
+    251          
+    252          		vTaskSuspendAll();
+    253          		{
+    254          			/* Add this block to the list of free blocks. */
+    255          			prvInsertBlockIntoFreeList( ( ( xBlockLink * ) pxLink ) );
+    256          			xFreeBytesRemaining += pxLink->xBlockSize;
+    257          			traceFREE( pv, pxLink->xBlockSize );
+    258          		}
+    259          		xTaskResumeAll();
+    260          	}
+    261          }
+    262          /*-----------------------------------------------------------*/
+    263          
+    264          size_t xPortGetFreeHeapSize( void )
+    265          {
+    266          	return xFreeBytesRemaining;
+    267          }
+    268          /*-----------------------------------------------------------*/
+    269          
+    270          void vPortInitialiseBlocks( void )
+    271          {
+    272          	/* This just exists to keep the linker quiet. */
+    273          }
+    274          /*-----------------------------------------------------------*/
+    275          
+    276          static void prvHeapInit( void )
+    277          {
+    278          xBlockLink *pxFirstFreeBlock;
+    279          unsigned char *pucAlignedHeap;
+    280          
+    281          	/* Ensure the heap starts on a correctly aligned boundary. */
+    282          	pucAlignedHeap = ( unsigned char * ) ( ( ( portPOINTER_SIZE_TYPE ) &ucHeap[ portBYTE_ALIGNMENT ] ) & ( ( portPOINTER_SIZE_TYPE ) ~portBYTE_ALIGNMENT_MASK ) );
+    283          
+    284          	/* xStart is used to hold a pointer to the first item in the list of free
+    285          	blocks.  The void cast is used to prevent compiler warnings. */
+    286          	xStart.pxNextFreeBlock = ( void * ) pucAlignedHeap;
+    287          	xStart.xBlockSize = ( size_t ) 0;
+    288          
+    289          	/* xEnd is used to mark the end of the list of free blocks. */
+    290          	xEnd.xBlockSize = configADJUSTED_HEAP_SIZE;
+    291          	xEnd.pxNextFreeBlock = NULL;
+    292          
+    293          	/* To start with there is a single free block that is sized to take up the
+    294          	entire heap space. */
+    295          	pxFirstFreeBlock = ( void * ) pucAlignedHeap;
+    296          	pxFirstFreeBlock->xBlockSize = configADJUSTED_HEAP_SIZE;
+    297          	pxFirstFreeBlock->pxNextFreeBlock = &xEnd;
+    298          }
+    299          /*-----------------------------------------------------------*/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        0  prvHeapInit
+       16  pvPortMalloc
+             16 -> prvHeapInit
+             16 -> vTaskSuspendAll
+             16 -> xTaskResumeAll
+        8  vPortFree
+              8 -> vTaskSuspendAll
+              8 -> xTaskResumeAll
+        0  vPortInitialiseBlocks
+        0  xPortGetFreeHeapSize
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable3
+       4  ??DataTable3_1
+       4  ??DataTable3_2
+       4  ??DataTable3_3
+       4  ??DataTable3_4
+       4  ??DataTable3_5
+       2  heapSTRUCT_SIZE
+      42  prvHeapInit
+     174  pvPortMalloc
+   17408  ucHeap
+      60  vPortFree
+       2  vPortInitialiseBlocks
+       8  xEnd
+       4  xFreeBytesRemaining
+       4  xHeapHasBeenInitialised
+       6  xPortGetFreeHeapSize
+       8  xStart
+
+ 
+ 17 428 bytes in section .bss
+      4 bytes in section .data
+      2 bytes in section .rodata
+    308 bytes in section .text
+ 
+    308 bytes of CODE  memory
+      2 bytes of CONST memory
+ 17 432 bytes of DATA  memory
+
+Errors: none
+Warnings: none

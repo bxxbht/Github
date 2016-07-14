@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>break.wav</file>
+        <file>exercise.wav</file>
+    </qresource>
+</RCC>

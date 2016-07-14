@@ -1,0 +1,404 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     22/Nov/2013  11:50:47 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\pragram\STM32F103_FreeRTOS\Common\Minimal\BlockQ.c    #
+#    Command line =  D:\pragram\STM32F103_FreeRTOS\Common\Minimal\BlockQ.c    #
+#                    -D IAR_ARM_CM3 -lcN D:\pragram\STM32F103_FreeRTOS\Debug\ #
+#                    List\ --diag_suppress Pa082,pe191 -o                     #
+#                    D:\pragram\STM32F103_FreeRTOS\Debug\Obj\ --no_cse        #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_clustering --no_scheduling --debug --endian=little  #
+#                    --cpu=Cortex-M3 -e --fpu=None --dlib_config "D:\Program  #
+#                    Files\IAR Systems\Embedded Workbench                     #
+#                    6.4\arm\INC\c\DLib_Config_Full.h" -I                     #
+#                    D:\pragram\STM32F103_FreeRTOS\.\ -I                      #
+#                    D:\pragram\STM32F103_FreeRTOS\STM32F10x_StdPeriph_Lib_V3 #
+#                    .5.0\Libraries\STM32F10x_StdPeriph_Driver\inc\ -I        #
+#                    D:\pragram\STM32F103_FreeRTOS\Source\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\Common\include\ -I         #
+#                    D:\pragram\STM32F103_FreeRTOS\CMSIS\ -I                  #
+#                    D:\pragram\STM32F103_FreeRTOS\user_task\ -I              #
+#                    D:\pragram\STM32F103_FreeRTOS\test_task\ -Ol             #
+#                    --use_c++_inline                                         #
+#    List file    =  D:\pragram\STM32F103_FreeRTOS\Debug\List\BlockQ.lst      #
+#    Object file  =  D:\pragram\STM32F103_FreeRTOS\Debug\Obj\BlockQ.o         #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\pragram\STM32F103_FreeRTOS\Common\Minimal\BlockQ.c
+      1          /*
+      2              FreeRTOS V7.5.3 - Copyright (C) 2013 Real Time Engineers Ltd. 
+      3              All rights reserved
+      4          
+      5              VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
+      6          
+      7              ***************************************************************************
+      8               *                                                                       *
+      9               *    FreeRTOS provides completely free yet professionally developed,    *
+     10               *    robust, strictly quality controlled, supported, and cross          *
+     11               *    platform software that has become a de facto standard.             *
+     12               *                                                                       *
+     13               *    Help yourself get started quickly and support the FreeRTOS         *
+     14               *    project by purchasing a FreeRTOS tutorial book, reference          *
+     15               *    manual, or both from: http://www.FreeRTOS.org/Documentation        *
+     16               *                                                                       *
+     17               *    Thank you!                                                         *
+     18               *                                                                       *
+     19              ***************************************************************************
+     20          
+     21              This file is part of the FreeRTOS distribution.
+     22          
+     23              FreeRTOS is free software; you can redistribute it and/or modify it under
+     24              the terms of the GNU General Public License (version 2) as published by the
+     25              Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+     26          
+     27              >>! NOTE: The modification to the GPL is included to allow you to distribute
+     28              >>! a combined work that includes FreeRTOS without being obliged to provide
+     29              >>! the source code for proprietary components outside of the FreeRTOS
+     30              >>! kernel.
+     31          
+     32              FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
+     33              WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     34              FOR A PARTICULAR PURPOSE.  Full license text is available from the following
+     35              link: http://www.freertos.org/a00114.html
+     36          
+     37              1 tab == 4 spaces!
+     38          
+     39              ***************************************************************************
+     40               *                                                                       *
+     41               *    Having a problem?  Start by reading the FAQ "My application does   *
+     42               *    not run, what could be wrong?"                                     *
+     43               *                                                                       *
+     44               *    http://www.FreeRTOS.org/FAQHelp.html                               *
+     45               *                                                                       *
+     46              ***************************************************************************
+     47          
+     48              http://www.FreeRTOS.org - Documentation, books, training, latest versions,
+     49              license and Real Time Engineers Ltd. contact details.
+     50          
+     51              http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
+     52              including FreeRTOS+Trace - an indispensable productivity tool, a DOS
+     53              compatible FAT file system, and our tiny thread aware UDP/IP stack.
+     54          
+     55              http://www.OpenRTOS.com - Real Time Engineers ltd license FreeRTOS to High
+     56              Integrity Systems to sell under the OpenRTOS brand.  Low cost OpenRTOS
+     57              licenses offer ticketed support, indemnification and middleware.
+     58          
+     59              http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+     60              engineered and independently SIL3 certified version for use in safety and
+     61              mission critical applications that require provable dependability.
+     62          
+     63              1 tab == 4 spaces!
+     64          */
+     65          
+     66          /*
+     67           * Creates six tasks that operate on three queues as follows:
+     68           *
+     69           * The first two tasks send and receive an incrementing number to/from a queue.
+     70           * One task acts as a producer and the other as the consumer.  The consumer is a
+     71           * higher priority than the producer and is set to block on queue reads.  The queue
+     72           * only has space for one item - as soon as the producer posts a message on the
+     73           * queue the consumer will unblock, pre-empt the producer, and remove the item.
+     74           *
+     75           * The second two tasks work the other way around.  Again the queue used only has
+     76           * enough space for one item.  This time the consumer has a lower priority than the
+     77           * producer.  The producer will try to post on the queue blocking when the queue is
+     78           * full.  When the consumer wakes it will remove the item from the queue, causing
+     79           * the producer to unblock, pre-empt the consumer, and immediately re-fill the
+     80           * queue.
+     81           *
+     82           * The last two tasks use the same queue producer and consumer functions.  This time the queue has
+     83           * enough space for lots of items and the tasks operate at the same priority.  The
+     84           * producer will execute, placing items into the queue.  The consumer will start
+     85           * executing when either the queue becomes full (causing the producer to block) or
+     86           * a context switch occurs (tasks of the same priority will time slice).
+     87           *
+     88           */
+     89          
+     90          #include <stdlib.h>
+     91          
+     92          /* Scheduler include files. */
+     93          #include "FreeRTOS.h"
+     94          #include "task.h"
+     95          #include "queue.h"
+     96          
+     97          /* Demo program include files. */
+     98          #include "BlockQ.h"
+     99          
+    100          #define blckqSTACK_SIZE		configMINIMAL_STACK_SIZE
+    101          #define blckqNUM_TASK_SETS	( 3 )
+    102          
+    103          /* Structure used to pass parameters to the blocking queue tasks. */
+    104          typedef struct BLOCKING_QUEUE_PARAMETERS
+    105          {
+    106          	xQueueHandle xQueue;					/*< The queue to be used by the task. */
+    107          	portTickType xBlockTime;				/*< The block time to use on queue reads/writes. */
+    108          	volatile short *psCheckVariable;	/*< Incremented on each successful cycle to check the task is still running. */
+    109          } xBlockingQueueParameters;
+    110          
+    111          /* Task function that creates an incrementing number and posts it on a queue. */
+    112          static portTASK_FUNCTION_PROTO( vBlockingQueueProducer, pvParameters );
+    113          
+    114          /* Task function that removes the incrementing number from a queue and checks that
+    115          it is the expected number. */
+    116          static portTASK_FUNCTION_PROTO( vBlockingQueueConsumer, pvParameters );
+    117          
+    118          /* Variables which are incremented each time an item is removed from a queue, and
+    119          found to be the expected value.
+    120          These are used to check that the tasks are still running. */
+    121          static volatile short sBlockingConsumerCount[ blckqNUM_TASK_SETS ] = { ( unsigned short ) 0, ( unsigned short ) 0, ( unsigned short ) 0 };
+    122          
+    123          /* Variable which are incremented each time an item is posted on a queue.   These
+    124          are used to check that the tasks are still running. */
+    125          static volatile short sBlockingProducerCount[ blckqNUM_TASK_SETS ] = { ( unsigned short ) 0, ( unsigned short ) 0, ( unsigned short ) 0 };
+    126          
+    127          /*-----------------------------------------------------------*/
+    128          
+    129          void vStartBlockingQueueTasks( unsigned portBASE_TYPE uxPriority )
+    130          {
+    131          xBlockingQueueParameters *pxQueueParameters1, *pxQueueParameters2;
+    132          xBlockingQueueParameters *pxQueueParameters3, *pxQueueParameters4;
+    133          xBlockingQueueParameters *pxQueueParameters5, *pxQueueParameters6;
+    134          const unsigned portBASE_TYPE uxQueueSize1 = 1, uxQueueSize5 = 5;
+    135          const portTickType xBlockTime = ( portTickType ) 1000 / portTICK_RATE_MS;
+    136          const portTickType xDontBlock = ( portTickType ) 0;
+    137          
+    138          	/* Create the first two tasks as described at the top of the file. */
+    139          	
+    140          	/* First create the structure used to pass parameters to the consumer tasks. */
+    141          	pxQueueParameters1 = ( xBlockingQueueParameters * ) pvPortMalloc( sizeof( xBlockingQueueParameters ) );
+    142          
+    143          	/* Create the queue used by the first two tasks to pass the incrementing number.
+    144          	Pass a pointer to the queue in the parameter structure. */
+    145          	pxQueueParameters1->xQueue = xQueueCreate( uxQueueSize1, ( unsigned portBASE_TYPE ) sizeof( unsigned short ) );
+    146          
+    147          	/* The consumer is created first so gets a block time as described above. */
+    148          	pxQueueParameters1->xBlockTime = xBlockTime;
+    149          
+    150          	/* Pass in the variable that this task is going to increment so we can check it
+    151          	is still running. */
+    152          	pxQueueParameters1->psCheckVariable = &( sBlockingConsumerCount[ 0 ] );
+    153          		
+    154          	/* Create the structure used to pass parameters to the producer task. */
+    155          	pxQueueParameters2 = ( xBlockingQueueParameters * ) pvPortMalloc( sizeof( xBlockingQueueParameters ) );
+    156          
+    157          	/* Pass the queue to this task also, using the parameter structure. */
+    158          	pxQueueParameters2->xQueue = pxQueueParameters1->xQueue;
+    159          
+    160          	/* The producer is not going to block - as soon as it posts the consumer will
+    161          	wake and remove the item so the producer should always have room to post. */
+    162          	pxQueueParameters2->xBlockTime = xDontBlock;
+    163          
+    164          	/* Pass in the variable that this task is going to increment so we can check
+    165          	it is still running. */
+    166          	pxQueueParameters2->psCheckVariable = &( sBlockingProducerCount[ 0 ] );
+    167          
+    168          
+    169          	/* Note the producer has a lower priority than the consumer when the tasks are
+    170          	spawned. */
+    171          	xTaskCreate( vBlockingQueueConsumer, ( signed char * ) "QConsB1", blckqSTACK_SIZE, ( void * ) pxQueueParameters1, uxPriority, NULL );
+    172          	xTaskCreate( vBlockingQueueProducer, ( signed char * ) "QProdB2", blckqSTACK_SIZE, ( void * ) pxQueueParameters2, tskIDLE_PRIORITY, NULL );
+    173          
+    174          	
+    175          
+    176          	/* Create the second two tasks as described at the top of the file.   This uses
+    177          	the same mechanism but reverses the task priorities. */
+    178          
+    179          	pxQueueParameters3 = ( xBlockingQueueParameters * ) pvPortMalloc( sizeof( xBlockingQueueParameters ) );
+    180          	pxQueueParameters3->xQueue = xQueueCreate( uxQueueSize1, ( unsigned portBASE_TYPE ) sizeof( unsigned short ) );
+    181          	pxQueueParameters3->xBlockTime = xDontBlock;
+    182          	pxQueueParameters3->psCheckVariable = &( sBlockingProducerCount[ 1 ] );
+    183          
+    184          	pxQueueParameters4 = ( xBlockingQueueParameters * ) pvPortMalloc( sizeof( xBlockingQueueParameters ) );
+    185          	pxQueueParameters4->xQueue = pxQueueParameters3->xQueue;
+    186          	pxQueueParameters4->xBlockTime = xBlockTime;
+    187          	pxQueueParameters4->psCheckVariable = &( sBlockingConsumerCount[ 1 ] );
+    188          
+    189          	xTaskCreate( vBlockingQueueConsumer, ( signed char * ) "QConsB3", blckqSTACK_SIZE, ( void * ) pxQueueParameters3, tskIDLE_PRIORITY, NULL );
+    190          	xTaskCreate( vBlockingQueueProducer, ( signed char * ) "QProdB4", blckqSTACK_SIZE, ( void * ) pxQueueParameters4, uxPriority, NULL );
+    191          
+    192          
+    193          
+    194          	/* Create the last two tasks as described above.  The mechanism is again just
+    195          	the same.  This time both parameter structures are given a block time. */
+    196          	pxQueueParameters5 = ( xBlockingQueueParameters * ) pvPortMalloc( sizeof( xBlockingQueueParameters ) );
+    197          	pxQueueParameters5->xQueue = xQueueCreate( uxQueueSize5, ( unsigned portBASE_TYPE ) sizeof( unsigned short ) );
+    198          	pxQueueParameters5->xBlockTime = xBlockTime;
+    199          	pxQueueParameters5->psCheckVariable = &( sBlockingProducerCount[ 2 ] );
+    200          
+    201          	pxQueueParameters6 = ( xBlockingQueueParameters * ) pvPortMalloc( sizeof( xBlockingQueueParameters ) );
+    202          	pxQueueParameters6->xQueue = pxQueueParameters5->xQueue;
+    203          	pxQueueParameters6->xBlockTime = xBlockTime;
+    204          	pxQueueParameters6->psCheckVariable = &( sBlockingConsumerCount[ 2 ] );	
+    205          
+    206          	xTaskCreate( vBlockingQueueProducer, ( signed char * ) "QProdB5", blckqSTACK_SIZE, ( void * ) pxQueueParameters5, tskIDLE_PRIORITY, NULL );
+    207          	xTaskCreate( vBlockingQueueConsumer, ( signed char * ) "QConsB6", blckqSTACK_SIZE, ( void * ) pxQueueParameters6, tskIDLE_PRIORITY, NULL );
+    208          }
+    209          /*-----------------------------------------------------------*/
+    210          
+    211          static portTASK_FUNCTION( vBlockingQueueProducer, pvParameters )
+    212          {
+    213          unsigned short usValue = 0;
+    214          xBlockingQueueParameters *pxQueueParameters;
+    215          short sErrorEverOccurred = pdFALSE;
+    216          
+    217          	pxQueueParameters = ( xBlockingQueueParameters * ) pvParameters;
+    218          
+    219          	for( ;; )
+    220          	{		
+    221          		if( xQueueSend( pxQueueParameters->xQueue, ( void * ) &usValue, pxQueueParameters->xBlockTime ) != pdPASS )
+    222          		{
+    223          			sErrorEverOccurred = pdTRUE;
+    224          		}
+    225          		else
+    226          		{
+    227          			/* We have successfully posted a message, so increment the variable
+    228          			used to check we are still running. */
+    229          			if( sErrorEverOccurred == pdFALSE )
+    230          			{
+    231          				( *pxQueueParameters->psCheckVariable )++;
+    232          			}
+    233          
+    234          			/* Increment the variable we are going to post next time round.  The
+    235          			consumer will expect the numbers to	follow in numerical order. */
+    236          			++usValue;
+    237          		}
+    238          	}
+    239          }
+    240          /*-----------------------------------------------------------*/
+    241          
+    242          static portTASK_FUNCTION( vBlockingQueueConsumer, pvParameters )
+    243          {
+    244          unsigned short usData, usExpectedValue = 0;
+    245          xBlockingQueueParameters *pxQueueParameters;
+    246          short sErrorEverOccurred = pdFALSE;
+    247          
+    248          	pxQueueParameters = ( xBlockingQueueParameters * ) pvParameters;
+    249          
+    250          	for( ;; )
+    251          	{	
+    252          		if( xQueueReceive( pxQueueParameters->xQueue, &usData, pxQueueParameters->xBlockTime ) == pdPASS )
+    253          		{
+    254          			if( usData != usExpectedValue )
+    255          			{
+    256          				/* Catch-up. */
+    257          				usExpectedValue = usData;
+    258          
+    259          				sErrorEverOccurred = pdTRUE;
+    260          			}
+    261          			else
+    262          			{
+    263          				/* We have successfully received a message, so increment the
+    264          				variable used to check we are still running. */	
+    265          				if( sErrorEverOccurred == pdFALSE )
+    266          				{
+    267          					( *pxQueueParameters->psCheckVariable )++;
+    268          				}
+    269          							
+    270          				/* Increment the value we expect to remove from the queue next time
+    271          				round. */
+    272          				++usExpectedValue;
+    273          			}			
+    274          		}		
+    275          	}
+    276          }
+    277          /*-----------------------------------------------------------*/
+    278          
+    279          /* This is called to check that all the created tasks are still running. */
+    280          portBASE_TYPE xAreBlockingQueuesStillRunning( void )
+    281          {
+    282          static short sLastBlockingConsumerCount[ blckqNUM_TASK_SETS ] = { ( unsigned short ) 0, ( unsigned short ) 0, ( unsigned short ) 0 };
+    283          static short sLastBlockingProducerCount[ blckqNUM_TASK_SETS ] = { ( unsigned short ) 0, ( unsigned short ) 0, ( unsigned short ) 0 };
+    284          portBASE_TYPE xReturn = pdPASS, xTasks;
+    285          
+    286          	/* Not too worried about mutual exclusion on these variables as they are 16
+    287          	bits and we are only reading them. We also only care to see if they have
+    288          	changed or not.
+    289          	
+    290          	Loop through each check variable to and return pdFALSE if any are found not
+    291          	to have changed since the last call. */
+    292          
+    293          	for( xTasks = 0; xTasks < blckqNUM_TASK_SETS; xTasks++ )
+    294          	{
+    295          		if( sBlockingConsumerCount[ xTasks ] == sLastBlockingConsumerCount[ xTasks ]  )
+    296          		{
+    297          			xReturn = pdFALSE;
+    298          		}
+    299          		sLastBlockingConsumerCount[ xTasks ] = sBlockingConsumerCount[ xTasks ];
+    300          
+    301          
+    302          		if( sBlockingProducerCount[ xTasks ] == sLastBlockingProducerCount[ xTasks ]  )
+    303          		{
+    304          			xReturn = pdFALSE;
+    305          		}
+    306          		sLastBlockingProducerCount[ xTasks ] = sBlockingProducerCount[ xTasks ];
+    307          	}
+    308          
+    309          	return xReturn;
+    310          }
+    311          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  vBlockingQueueConsumer
+              8 -> xQueueGenericReceive
+        8  vBlockingQueueProducer
+              8 -> xQueueGenericSend
+       48  vStartBlockingQueueTasks
+             48 -> pvPortMalloc
+             48 -> xQueueGenericCreate
+             48 -> xTaskGenericCreate
+        0  xAreBlockingQueuesStillRunning
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       8  ?<Constant "QConsB1">
+       8  ?<Constant "QConsB3">
+       8  ?<Constant "QConsB6">
+       8  ?<Constant "QProdB2">
+       8  ?<Constant "QProdB4">
+       8  ?<Constant "QProdB5">
+       4  ??DataTable1
+       4  ??DataTable1_1
+       4  ??DataTable1_10
+       4  ??DataTable1_11
+       4  ??DataTable1_12
+       4  ??DataTable1_13
+       4  ??DataTable1_2
+       4  ??DataTable1_3
+       4  ??DataTable1_4
+       4  ??DataTable1_5
+       4  ??DataTable1_6
+       4  ??DataTable1_7
+       4  ??DataTable1_8
+       4  ??DataTable1_9
+       8  sBlockingConsumerCount
+       8  sBlockingProducerCount
+       8  sLastBlockingConsumerCount
+       8  sLastBlockingProducerCount
+      62  vBlockingQueueConsumer
+      60  vBlockingQueueProducer
+     352  vStartBlockingQueueTasks
+      74  xAreBlockingQueuesStillRunning
+
+ 
+  32 bytes in section .bss
+  48 bytes in section .rodata
+ 604 bytes in section .text
+ 
+ 604 bytes of CODE  memory
+  48 bytes of CONST memory
+  32 bytes of DATA  memory
+
+Errors: none
+Warnings: none
