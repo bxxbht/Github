@@ -1,0 +1,46 @@
+/* Customize any plain widget that is a child of a QMainWindow. */
+QDialog {
+    background-color: #2a2926;
+}
+
+QWidget {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+QPushButton, QComboBox {
+    min-height: 25px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #000000;
+    border-radius: 3px;
+}
+
+QPushButton {
+    color: #ffffff;
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #8b8a88, stop: 0.08 #8b8a88,
+        stop: 0.09 #54524f, stop: 0.92 #373534,
+	stop: 0.93 #2a2926, stop: 1 #2a2926);
+}
+
+QPushButton:disabled {
+    color: #6a6866;
+    background: #3f3e3a;
+}
+
+QPushButton:focus {
+    color: #000000;
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #e8e6e1, stop: 0.08 #e8e6e1,
+        stop: 0.09 #cbc5bc, stop: 0.92 #a7a29a,
+	stop: 0.93 #74706a, stop: 1 #74706a);
+}
+
+QPushButton:pressed {
+    color: #000000;
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #fff2d6, stop: 0.08 #fff2d6,
+        stop: 0.09 #ffe0a0, stop: 0.92 #ffc258,
+	stop: 0.93 #e08f35, stop: 1 #e08f35);
+}
